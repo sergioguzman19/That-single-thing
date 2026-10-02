@@ -19,4 +19,11 @@ Web app responsiva: varios carriles (frentes de vida) con colas de tareas que co
 - Prototipo conceptual (HTML único): `docs/prototype/index.html`
 
 ## Stack
-Next.js (App Router) + TypeScript + Tailwind v4. Base de datos y auth: Supabase (pendiente). Idioma de la UI: español.
+Next.js 16 (App Router) + TypeScript + Tailwind v4 + shadcn/ui (radix-nova). Supabase (Postgres + auth, migraciones en `supabase/migrations`). Deploy: Vercel. Idioma de la UI: español.
+
+## Diseño: "Portal sobre blanco"
+- Sistema base shadcn/ui. **No editar `src/components/ui`**: la identidad entra por los tokens de `src/app/globals.css` y los componentes firma de `src/components/brand` (MergeLines, PortalCard).
+- Fondo blanco puro, nunca crema ni blanco cálido. Un solo acento: azul maya (`maya`, y `maya-ink` para texto). Tinta "sombra verde". Ocre Izamal (`rot`) solo para tareas pudriéndose.
+- Tipografía: Marcellus (`font-heading`, títulos y la tarea), Hanken Grotesk (`font-sans`), Geist Mono (cifras). Utilidades `arch` y `eyebrow`.
+- Colores de carril: `src/lib/lanes.ts` (`lane-*` tokens). Usarlos en líneas, puntos y bordes, no en fondos grandes.
+- Referencia viva: ruta `/sistema`. Moodboard: `docs/identity/directions.html`.

@@ -132,6 +132,37 @@ h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.05; margin: 10px 0 14px; 
 .c .spec-m { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--mut); }
 .c h2 { font-family: var(--display); font-weight: 700; letter-spacing: -.03em; }
 
+/* ===== Iteración 2 · Portal en blanco ===== */
+.iter { border: 1px solid var(--ink); background: #fff; padding: 22px 18px 28px; margin-top: 40px; }
+.iter h2 { font-family: "Marcellus", Georgia, serif; font-weight: 400; font-size: clamp(30px, 5vw, 44px); margin: 8px 0 8px; line-height: 1.05; }
+.iter > p { color: var(--muted); max-width: 64ch; margin: 0 0 8px; }
+.pv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; margin-top: 26px; }
+.pv-col { display: grid; gap: 14px; justify-items: center; }
+.pv-col .label { width: 100%; max-width: 340px; }
+.pv-col .label b { font-size: 17px; font-weight: 600; display: block; }
+.pv-col .label span { color: var(--muted); font-size: 13px; }
+.pv-col .chips { display: flex; gap: 4px; margin-top: 8px; }
+.pv-col .chips i { width: 26px; height: 26px; border: 1px solid rgba(0,0,0,.1); display: block; }
+.pv .phone { max-width: 340px; }
+.pv { --bg: #FFFFFF; --fg: var(--ink2); --mut: #8A8D8B;
+      --display: "Marcellus", Georgia, serif; --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif; }
+.pv .screen { background: #FFFFFF; min-height: 610px; }
+.pv .eyb { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--mut); }
+.pv .lane { color: var(--mut); border-bottom: 1px solid #E6E8E7; }
+.pv .lane.on { color: var(--fg); border-bottom: 2px solid var(--acc); font-weight: 600; }
+.pv .card { background: var(--tint); border-radius: 999px 999px 6px 6px / 150px 150px 6px 6px; padding: 62px 22px 20px; text-align: center;
+  box-shadow: inset 0 0 0 1px var(--edge); }
+.pv .card h3 { font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1.12; margin-top: 10px; color: var(--fg); }
+.pv .card p { color: var(--mut); font-size: 13px; margin: 12px 0 10px; }
+.pv .card .meta { color: var(--mut); }
+.pv .card .meta b { color: var(--acc); }
+.pv .acts .p { background: var(--fg); color: #fff; border-radius: 3px; font-weight: 600; }
+.pv .acts .s { border: 1px solid #D5D9D7; background: #fff; border-radius: 3px; }
+.pv .tabbar { color: var(--mut); border-top: 1px solid #EEF0EF; } .pv .tabbar b { color: var(--fg); font-weight: 600; }
+.pv-maya   { --ink2: #16211D; --acc: #2F8FA6; --tint: #F2F8FA; --edge: #DDEBEF; }
+.pv-izamal { --ink2: #1E1D1B; --acc: #D9A21B; --tint: #F8F8F7; --edge: #E8E8E5; }
+.pv-verde  { --ink2: #18241E; --acc: #3F6B55; --tint: #F3F7F4; --edge: #DCE7E0; }
+
 .close { border-top: 1px solid var(--ink); margin-top: 72px; padding-top: 18px; max-width: 70ch; }
 .close h2 { font-size: 24px; margin: 6px 0 8px; font-weight: 600; }
 .close p { color: var(--muted); margin: 0 0 8px; }
@@ -149,8 +180,58 @@ h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.05; margin: 10px 0 14px; 
     <div><span class="eyebrow">Referentes</span><b>Mérida contemporánea · running moderno</b></div>
   </div>
   <nav class="jump" aria-label="Direcciones">
-    <a href="#portal">A · Portal</a><a href="#pista">B · Pista</a><a href="#patio">C · Patio</a>
+    <a href="#portal-blanco">Iteración 2 · Portal en blanco</a><a href="#portal">A · Portal</a><a href="#pista">B · Pista</a><a href="#patio">C · Patio</a>
   </nav>
+
+  <section class="iter" id="portal-blanco">
+    <span class="eyebrow">Iteración 2 · Tu elección</span>
+    <h2>Portal, sobre blanco</h2>
+    <p>El arco y la tipografía de inscripción se quedan; los fondos crema se van. La pantalla es blanca de verdad, sin tinte cálido. El arco ya no es un muro de cal: es una luz muy tenue del color de acento, como mirar hacia un patio desde el umbral. La textura de chukum también se va: sobre blanco se ve sucia.</p>
+    <p>Lo único que cambia entre las tres es el acento. Escoge uno.</p>
+    <div class="pv-grid" id="pv-grid"></div>
+  </section>
+
+  <template id="pv-phone">
+    <div class="phone"><div class="screen">
+      <div class="status"><span>7:04</span><span>●●●</span></div>
+      <div class="app">
+        <div class="eyb">Martes · Mañana · Bloque de Concejo</div>
+        <div class="lanes" style="margin-top:14px"><span class="lane on">Concejo</span><span class="lane">Clientes</span><span class="lane">Empresa</span><span class="lane">Personal</span><span class="lane">Hyrox</span></div>
+        <svg class="merge" viewBox="0 0 320 92" preserveAspectRatio="none" aria-hidden="true">
+          <g fill="none" stroke="#000" stroke-opacity=".12" stroke-width="1">
+            <path d="M96 0 C96 50 160 46 160 92"/><path d="M160 0 V92"/><path d="M224 0 C224 50 160 46 160 92"/><path d="M288 0 C288 56 160 40 160 92"/>
+          </g>
+          <path d="M32 0 C32 56 160 40 160 92" fill="none" style="stroke:var(--acc)" stroke-width="2"/>
+        </svg>
+        <div class="card">
+          <div class="eyb">Concejo · 1 de 4</div>
+          <h3>Revisar el proyecto de acuerdo de presupuesto 2027</h3>
+          <p>Marcar artículos con riesgo jurídico y preparar observaciones para la comisión.</p>
+          <div class="meta"><b>●</b> En cola hace 10 días</div>
+          <div class="acts" style="margin-top:22px"><span class="p">Hecho</span><span class="s">Empezar</span></div>
+        </div>
+      </div>
+      <div class="tabbar"><b>Ahora</b><span>Carriles</span><span>Semana</span></div>
+    </div></div>
+  </template>
+  <script>
+    (function () {
+      const variants = [
+        { cls: 'pv-maya', name: '1 · Azul maya', note: 'Agua de patio. El más fresco y calmado; se lleva con el blanco sin esfuerzo.', chips: ['#FFFFFF', '#F2F8FA', '#2F8FA6', '#16211D'] },
+        { cls: 'pv-izamal', name: '2 · Ocre Izamal', note: 'El amarillo de Izamal solo como línea y detalle, nunca como fondo. Más cálido y más Mérida.', chips: ['#FFFFFF', '#F8F8F7', '#D9A21B', '#1E1D1B'] },
+        { cls: 'pv-verde', name: '3 · Verde patio', note: 'La vegetación del patio. El más sobrio y serio; buen tono para lo legal.', chips: ['#FFFFFF', '#F3F7F4', '#3F6B55', '#18241E'] },
+      ];
+      const grid = document.getElementById('pv-grid');
+      const tpl = document.getElementById('pv-phone');
+      variants.forEach(v => {
+        const col = document.createElement('div');
+        col.className = 'pv-col pv ' + v.cls;
+        col.innerHTML = `<div class="label"><b>${v.name}</b><span>${v.note}</span><div class="chips">${v.chips.map(c => `<i style="background:${c}" title="${c}"></i>`).join('')}</div></div>`;
+        col.appendChild(tpl.content.cloneNode(true));
+        grid.appendChild(col);
+      });
+    })();
+  </script>
 
   <!-- ================= A ================= -->
   <section class="dir a" id="portal">

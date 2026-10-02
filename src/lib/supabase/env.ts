@@ -1,5 +1,5 @@
 function required(name: string, value: string | undefined): string {
-  if (!value) throw new Error(`Falta la variable de entorno ${name}. Revisa .env.local.`);
+  if (!value) throw new Error(`Falta la variable de entorno ${name}. Configúrala en .env.local (local) o en Vercel → Settings → Environment Variables.`);
   return value;
 }
 

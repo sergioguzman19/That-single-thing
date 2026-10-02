@@ -1,0 +1,339 @@
+<title>That Single Thing · Direcciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: brief arriba; luego tres direcciones apiladas, cada una con ficha (paleta, tipo, motivo) + teléfono de muestra. Página en tono neutro para no competir con las direcciones. Tema claro deliberado: el brief pide claro primero. */
+:root {
+  color-scheme: light;
+  --page: #F3F3F1;
+  --ink: #1A1A19;
+  --muted: #6E6E69;
+  --rule: #D9D9D4;
+  --chrome: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --chrome-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+body { background: var(--page); color: var(--ink); font-family: var(--chrome); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 80px; }
+.eyebrow { font-family: var(--chrome-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.05; margin: 10px 0 14px; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+.lede { max-width: 62ch; color: var(--muted); margin: 0; }
+.brief { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-block: 28px 8px; }
+.brief div { background: var(--page); padding: 14px 16px; }
+.brief b { display: block; font-weight: 600; margin-top: 4px; }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.jump a { font-family: var(--chrome-mono); font-size: 12px; color: var(--ink); text-decoration: none; border: 1px solid var(--rule); padding: 6px 12px; border-radius: 99px; }
+.jump a:hover { border-color: var(--ink); }
+
+.dir { border-top: 1px solid var(--ink); margin-top: 64px; padding-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; align-items: start; }
+@media (max-width: 860px) { .dir { grid-template-columns: minmax(0, 1fr); } }
+.dir-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.dir-head .letter { font-family: var(--chrome-mono); font-size: 12px; color: var(--muted); }
+.dir h2 { margin: 0; font-size: clamp(34px, 6vw, 56px); line-height: 1; font-weight: 400; }
+.concept { font-size: 18px; max-width: 54ch; margin: 14px 0 6px; text-wrap: pretty; }
+.refs { color: var(--muted); font-size: 13px; margin: 0 0 22px; max-width: 64ch; }
+.block { margin-top: 26px; }
+.block > .eyebrow { display: block; margin-bottom: 10px; }
+
+.palette { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 520px) { .palette { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.sw { border: 1px solid rgba(0,0,0,.08); }
+.sw i { display: block; height: 64px; }
+.sw span { display: block; padding: 6px 8px 8px; font-size: 12px; line-height: 1.3; background: #fff; }
+.sw span em { display: block; font-style: normal; font-family: var(--chrome-mono); font-size: 10.5px; color: var(--muted); }
+
+.type { background: #fff; border: 1px solid var(--rule); padding: 18px; display: grid; gap: 8px; }
+.type .spec-d { line-height: 1.05; text-wrap: balance; }
+.type .spec-b { max-width: 52ch; }
+.type .spec-m { font-size: 12px; }
+.type .names { font-family: var(--chrome-mono); font-size: 11px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 4px; }
+
+.why { margin: 0; padding-left: 18px; color: var(--ink); }
+.why li { margin-bottom: 6px; }
+.risk { font-size: 13px; color: var(--muted); border-left: 2px solid var(--rule); padding-left: 12px; margin-top: 14px; }
+
+/* ---------- Teléfono ---------- */
+.phone { width: 100%; max-width: 360px; justify-self: center; border-radius: 34px; padding: 10px; background: #111; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+.screen { border-radius: 26px; overflow: hidden; min-height: 640px; position: relative; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: var(--body); }
+.status { display: flex; justify-content: space-between; padding: 12px 22px 0; font-size: 12px; font-weight: 600; font-family: var(--body); }
+.app { padding: 14px 18px 18px; display: flex; flex-direction: column; flex: 1; }
+.lanes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.lane { text-align: center; font-size: 10.5px; padding: 6px 2px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.merge { display: block; width: 100%; height: 92px; }
+.card { flex: 1; display: flex; flex-direction: column; }
+.card h3 { margin: 0; text-wrap: balance; }
+.card .meta { font-size: 11px; }
+.card .acts { margin-top: auto; display: flex; gap: 8px; }
+.card .acts span { flex: 1; text-align: center; padding: 12px 8px; font-size: 13px; }
+.tabbar { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; font-size: 11px; padding: 10px 0 16px; }
+
+/* ===== A · Portal (Mérida) ===== */
+.a { --bg: #ECE4DA; --surface: #F7F3EE; --fg: #2A2420; --mut: #8E8175; --acc: #D9A21B; --acc2: #3F5B4B;
+     --display: "Marcellus", Georgia, serif; --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif; }
+.a .screen { background:
+  radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 40%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+  var(--bg); }
+.a .eyb { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--mut); }
+.a .lane { color: var(--mut); border-bottom: 1px solid rgba(42,36,32,.15); }
+.a .lane.on { color: var(--fg); border-bottom: 2px solid var(--acc); font-weight: 600; }
+.a .card { background: var(--surface); border-radius: 999px 999px 6px 6px / 150px 150px 6px 6px; padding: 64px 22px 20px; text-align: center; box-shadow: inset 0 0 0 1px rgba(42,36,32,.08), 0 18px 30px -24px rgba(42,36,32,.5); }
+.a .card h3 { font-family: var(--display); font-weight: 400; font-size: 27px; line-height: 1.12; margin-top: 10px; }
+.a .card p { color: var(--mut); font-size: 13px; margin: 12px 0 10px; }
+.a .card .meta { color: var(--mut); }
+.a .card .acts { margin-top: auto; }
+.a .acts .p { background: var(--fg); color: var(--surface); border-radius: 3px; font-weight: 600; }
+.a .acts .s { border: 1px solid rgba(42,36,32,.25); border-radius: 3px; }
+.a .tabbar { color: var(--mut); } .a .tabbar b { color: var(--fg); font-weight: 600; }
+.a .spec-d { font-family: var(--display); font-size: 34px; }
+.a .spec-b { font-family: var(--body); }
+.a .spec-m { font-family: var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--mut); }
+.a h2 { font-family: var(--display); }
+
+/* ===== B · Pista (running) ===== */
+.b { --bg: #EDEDEA; --surface: #FFFFFF; --fg: #1B1B1A; --mut: #85857F; --acc: #5D4FA0; --acc2: #B9B4A6;
+     --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace; }
+.b .eyb { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--mut); display: flex; justify-content: space-between; }
+.b .lane { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; color: var(--mut); border-top: 1px solid var(--fg); padding-top: 5px; text-align: left; }
+.b .lane i { font-style: normal; display: block; font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--fg); line-height: 1; }
+.b .lane.on { color: var(--acc); border-top: 3px solid var(--acc); padding-top: 3px; } .b .lane.on i { color: var(--acc); }
+.b .card { background: var(--surface); padding: 18px 18px 18px; position: relative; border: 1px solid #D6D6D0; }
+.b .card .tag { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--mut); border-bottom: 1px dashed #CFCFC8; padding-bottom: 10px; }
+.b .card .bib { font-family: var(--display); font-weight: 700; font-size: 64px; line-height: .9; color: var(--acc); margin-top: 14px; letter-spacing: -.01em; }
+.b .card h3 { font-family: var(--display); font-weight: 600; font-size: 30px; line-height: 1; text-transform: uppercase; margin-top: 8px; }
+.b .card p { color: var(--mut); font-size: 13px; margin: 10px 0; }
+.b .card .meta { font-family: var(--mono); color: var(--mut); text-transform: uppercase; font-size: 10px; }
+.b .acts .p { background: var(--fg); color: #fff; font-family: var(--mono); text-transform: uppercase; font-size: 12px; letter-spacing: .04em; }
+.b .acts .s { border: 1px solid var(--fg); font-family: var(--mono); text-transform: uppercase; font-size: 12px; }
+.b .tabbar { font-family: var(--mono); text-transform: uppercase; font-size: 10px; color: var(--mut); border-top: 1px solid #D6D6D0; } .b .tabbar b { color: var(--fg); font-weight: 500; }
+.b .spec-d { font-family: var(--display); font-weight: 600; font-size: 40px; text-transform: uppercase; }
+.b .spec-b { font-family: var(--body); }
+.b .spec-m { font-family: var(--mono); text-transform: uppercase; color: var(--mut); }
+.b h2 { font-family: var(--display); font-weight: 600; text-transform: uppercase; }
+
+/* ===== C · Patio (fusión) ===== */
+.c { --bg: #EEF0EB; --surface: #FAFBF7; --fg: #17201C; --mut: #7A847E; --acc: #2F8FA6; --acc2: #C99A2E;
+     --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; --body: "Geist", "Helvetica Neue", Arial, sans-serif; --mono: "Geist Mono", ui-monospace, monospace; }
+.c .eyb { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--mut); }
+.c .lane { color: var(--mut); border-radius: 99px; border: 1px solid #DCE0DA; background: var(--surface); }
+.c .lane.on { color: var(--surface); background: var(--fg); border-color: var(--fg); }
+.c .card { background: var(--surface); padding: 12px; border-radius: 4px; box-shadow: 0 1px 0 rgba(23,32,28,.06), 0 20px 34px -26px rgba(23,32,28,.5); }
+.c .card .court { border: 1px solid #DCE0DA; padding: 20px 16px 16px; display: flex; flex-direction: column; flex: 1; position: relative; }
+.c .card .water { height: 6px; background: var(--acc); width: 44px; margin-bottom: 16px; }
+.c .card h3 { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.04; letter-spacing: -.02em; }
+.c .card p { color: var(--mut); font-size: 13px; margin: 10px 0; }
+.c .card .meta { font-family: var(--mono); color: var(--mut); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.c .card .meta b { color: var(--acc2); font-weight: 500; }
+.c .acts .p { background: var(--fg); color: var(--surface); border-radius: 4px; font-weight: 500; }
+.c .acts .s { border: 1px solid #CBD1CA; border-radius: 4px; }
+.c .tabbar { color: var(--mut); } .c .tabbar b { color: var(--fg); font-weight: 600; }
+.c .spec-d { font-family: var(--display); font-weight: 700; font-size: 36px; letter-spacing: -.02em; }
+.c .spec-b { font-family: var(--body); }
+.c .spec-m { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--mut); }
+.c h2 { font-family: var(--display); font-weight: 700; letter-spacing: -.03em; }
+
+.close { border-top: 1px solid var(--ink); margin-top: 72px; padding-top: 18px; max-width: 70ch; }
+.close h2 { font-size: 24px; margin: 6px 0 8px; font-weight: 600; }
+.close p { color: var(--muted); margin: 0 0 8px; }
+</style>
+
+<div class="wrap">
+  <span class="eyebrow">That Single Thing · Pilar de diseño · Paso 2 de 5</span>
+  <h1>Tres direcciones de identidad sobre shadcn/ui</h1>
+  <p class="lede">Las tres usan el mismo sistema base y la misma pantalla: el bloque de Concejo del martes en la mañana. Cambia lo que la identidad controla: paleta, tipografía, forma de la tarjeta y cómo se dibuja la convergencia.</p>
+
+  <div class="brief">
+    <div><span class="eyebrow">Sentir</span><b>Calma y foco, sin recargar</b></div>
+    <div><span class="eyebrow">Metáfora</span><b>Abstracta: líneas que convergen</b></div>
+    <div><span class="eyebrow">Tema</span><b>Claro primero</b></div>
+    <div><span class="eyebrow">Referentes</span><b>Mérida contemporánea · running moderno</b></div>
+  </div>
+  <nav class="jump" aria-label="Direcciones">
+    <a href="#portal">A · Portal</a><a href="#pista">B · Pista</a><a href="#patio">C · Patio</a>
+  </nav>
+
+  <!-- ================= A ================= -->
+  <section class="dir a" id="portal">
+    <div>
+      <div class="dir-head"><span class="letter">A</span><h2>Portal</h2></div>
+      <p class="concept">La tarea única vive dentro de un arco. Los carriles son corredores que llegan al umbral de una casona: entras y solo hay una cosa.</p>
+      <p class="refs">Mérida en primer plano: muros de chukum con textura, arcos coloniales, el amarillo de Izamal y el verde de los patios. Tipografía de inscripción en piedra con una sans moderna al lado.</p>
+
+      <div class="block"><span class="eyebrow">Paleta</span>
+        <div class="palette">
+          <div class="sw"><i style="background:#ECE4DA"></i><span>Chukum<em>#ECE4DA</em></span></div>
+          <div class="sw"><i style="background:#F7F3EE"></i><span>Cal<em>#F7F3EE</em></span></div>
+          <div class="sw"><i style="background:#2A2420"></i><span>Sombra de portal<em>#2A2420</em></span></div>
+          <div class="sw"><i style="background:#D9A21B"></i><span>Ocre Izamal<em>#D9A21B</em></span></div>
+          <div class="sw"><i style="background:#3F5B4B"></i><span>Verde patio<em>#3F5B4B</em></span></div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Tipografía</span>
+        <div class="type">
+          <div class="spec-d">Revisar el proyecto de acuerdo</div>
+          <div class="spec-b">Leer articulado y anexos, marcar artículos con riesgo jurídico y preparar observaciones.</div>
+          <div class="spec-m">Martes · Mañana · Concejo</div>
+          <div class="names">Display: Marcellus (inscripción clásica) · Texto: Hanken Grotesk</div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Por qué funciona</span>
+        <ul class="why">
+          <li>El arco hace de marco: separa la única tarea de todo lo demás sin necesidad de más elementos.</li>
+          <li>La textura de cal da calidez y calma. Se siente hecho a mano, no generado.</li>
+          <li>Es la más memorable: nadie más tiene una app de tareas con forma de portal.</li>
+        </ul>
+        <p class="risk">Riesgo: es la más decorativa. Si se exagera, la textura y la serif clásica la vuelven "de hotel boutique". Hay que dosificar.</p>
+      </div>
+    </div>
+    <div class="phone" aria-label="Pantalla de muestra, dirección Portal">
+      <div class="screen">
+        <div class="status"><span>7:04</span><span>●●●</span></div>
+        <div class="app">
+          <div class="eyb">Martes · Mañana · Bloque de Concejo</div>
+          <div class="lanes" style="margin-top:14px"><span class="lane on">Concejo</span><span class="lane">Clientes</span><span class="lane">Empresa</span><span class="lane">Personal</span><span class="lane">Hyrox</span></div>
+          <svg class="merge" viewBox="0 0 320 92" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="none" stroke="#2A2420" stroke-opacity=".18" stroke-width="1">
+              <path d="M96 0 C96 50 160 46 160 92"/><path d="M160 0 V92"/><path d="M224 0 C224 50 160 46 160 92"/><path d="M288 0 C288 56 160 40 160 92"/>
+            </g>
+            <path d="M32 0 C32 56 160 40 160 92" fill="none" stroke="#D9A21B" stroke-width="2"/>
+          </svg>
+          <div class="card">
+            <div class="eyb">Concejo · 1 de 4</div>
+            <h3>Revisar el proyecto de acuerdo de presupuesto 2027</h3>
+            <p>Marcar artículos con riesgo jurídico y preparar observaciones para la comisión.</p>
+            <div class="meta">En cola hace 10 días</div>
+            <div class="acts" style="margin-top:22px"><span class="p">Hecho</span><span class="s">Empezar</span></div>
+          </div>
+        </div>
+        <div class="tabbar"><b>Ahora</b><span>Carriles</span><span>Semana</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= B ================= -->
+  <section class="dir b" id="pista">
+    <div>
+      <div class="dir-head"><span class="letter">B</span><h2>Pista</h2></div>
+      <p class="concept">Cada carril es un carril de pista numerado. La tarea es tu dorsal: un número grande, una instrucción y nada más. Disciplina de atleta aplicada al trabajo.</p>
+      <p class="refs">Running moderno en primer plano: Satisfy, Tracksmith, District Vision. Etiquetas de prenda técnica, condensada en mayúsculas, monoespaciada para los datos. El acento es el morado de la pista de París 2024.</p>
+
+      <div class="block"><span class="eyebrow">Paleta</span>
+        <div class="palette">
+          <div class="sw"><i style="background:#EDEDEA"></i><span>Papel técnico<em>#EDEDEA</em></span></div>
+          <div class="sw"><i style="background:#FFFFFF"></i><span>Blanco dorsal<em>#FFFFFF</em></span></div>
+          <div class="sw"><i style="background:#1B1B1A"></i><span>Negro lavado<em>#1B1B1A</em></span></div>
+          <div class="sw"><i style="background:#5D4FA0"></i><span>Morado pista<em>#5D4FA0</em></span></div>
+          <div class="sw"><i style="background:#B9B4A6"></i><span>Arena<em>#B9B4A6</em></span></div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Tipografía</span>
+        <div class="type">
+          <div class="spec-d">Revisar el proyecto de acuerdo</div>
+          <div class="spec-b">Leer articulado y anexos, marcar artículos con riesgo jurídico y preparar observaciones.</div>
+          <div class="spec-m">Carril 01 · Concejo · 10 días en cola</div>
+          <div class="names">Display: Barlow Condensed · Texto: Hanken Grotesk · Datos: IBM Plex Mono</div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Por qué funciona</span>
+        <ul class="why">
+          <li>Habla tu idioma de Hyrox: foco, ejecución y "una serie a la vez".</li>
+          <li>Es la más funcional: los números y las etiquetas ordenan la información sin decorar.</li>
+          <li>Escala bien a producto: tiene un aire de marca deportiva premium.</li>
+        </ul>
+        <p class="risk">Riesgo: es la menos cálida. En un mal día puede sentirse como una exigencia más que como calma.</p>
+      </div>
+    </div>
+    <div class="phone" aria-label="Pantalla de muestra, dirección Pista">
+      <div class="screen">
+        <div class="status"><span>7:04</span><span>●●●</span></div>
+        <div class="app">
+          <div class="eyb"><span>Mar 07:04</span><span>Bloque · Concejo</span></div>
+          <div class="lanes" style="margin-top:14px"><span class="lane on"><i>01</i>Concejo</span><span class="lane"><i>02</i>Clientes</span><span class="lane"><i>03</i>Empresa</span><span class="lane"><i>04</i>Personal</span><span class="lane"><i>05</i>Hyrox</span></div>
+          <svg class="merge" viewBox="0 0 320 92" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="none" stroke="#1B1B1A" stroke-opacity=".22" stroke-width="1">
+              <path d="M96 0 V30 Q96 60 140 70 L160 92"/><path d="M160 0 V92"/><path d="M224 0 V30 Q224 60 180 70 L160 92"/><path d="M288 0 V30 Q288 64 190 74 L160 92"/>
+            </g>
+            <path d="M32 0 V30 Q32 64 130 74 L160 92" fill="none" stroke="#5D4FA0" stroke-width="3"/>
+          </svg>
+          <div class="card">
+            <div class="tag"><span>Concejo</span><span>1 / 4</span></div>
+            <div class="bib">01</div>
+            <h3>Revisar el proyecto de acuerdo de presupuesto 2027</h3>
+            <p>Marcar artículos con riesgo jurídico y preparar observaciones.</p>
+            <div class="meta">En cola · 10 días</div>
+            <div class="acts" style="margin-top:18px"><span class="p">Hecho</span><span class="s">Empezar</span></div>
+          </div>
+        </div>
+        <div class="tabbar"><b>Ahora</b><span>Carriles</span><span>Semana</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C ================= -->
+  <section class="dir c" id="patio">
+    <div>
+      <div class="dir-head"><span class="letter">C</span><h2>Patio</h2></div>
+      <p class="concept">Fusión de las dos. La tarea única es el patio central de la casa: un espacio enmarcado y silencioso con un poco de agua. Los carriles son los corredores que llegan a él. La disciplina tipográfica viene del running.</p>
+      <p class="refs">La calma y los materiales de Mérida (cal, agua de patio, ocre como detalle mínimo) con la economía de elementos y los datos monoespaciados del running moderno. Es la más contemporánea de las tres.</p>
+
+      <div class="block"><span class="eyebrow">Paleta</span>
+        <div class="palette">
+          <div class="sw"><i style="background:#EEF0EB"></i><span>Cal lavada<em>#EEF0EB</em></span></div>
+          <div class="sw"><i style="background:#FAFBF7"></i><span>Muro<em>#FAFBF7</em></span></div>
+          <div class="sw"><i style="background:#17201C"></i><span>Sombra verde<em>#17201C</em></span></div>
+          <div class="sw"><i style="background:#2F8FA6"></i><span>Azul maya<em>#2F8FA6</em></span></div>
+          <div class="sw"><i style="background:#C99A2E"></i><span>Ocre<em>#C99A2E</em></span></div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Tipografía</span>
+        <div class="type">
+          <div class="spec-d">Revisar el proyecto de acuerdo</div>
+          <div class="spec-b">Leer articulado y anexos, marcar artículos con riesgo jurídico y preparar observaciones.</div>
+          <div class="spec-m">Martes · Mañana · Concejo</div>
+          <div class="names">Display: Bricolage Grotesque · Texto: Geist · Datos: Geist Mono</div>
+        </div>
+      </div>
+      <div class="block"><span class="eyebrow">Por qué funciona</span>
+        <ul class="why">
+          <li>Es la más cercana a "calma y foco sin recargar": un marco, un acento, mucho aire.</li>
+          <li>Toma lo sabio de Mérida (el patio como centro, el agua y la cal) sin volverse decorativa.</li>
+          <li>Se lleva bien con shadcn: los tokens mandan y casi no hay que romper componentes.</li>
+        </ul>
+        <p class="risk">Riesgo: es la más sobria. Si no cuidamos el detalle (el marco interior, el agua, el movimiento), puede terminar pareciendo una app más.</p>
+      </div>
+    </div>
+    <div class="phone" aria-label="Pantalla de muestra, dirección Patio">
+      <div class="screen">
+        <div class="status"><span>7:04</span><span>●●●</span></div>
+        <div class="app">
+          <div class="eyb">Martes · Mañana · Concejo</div>
+          <div class="lanes" style="margin-top:14px"><span class="lane on">Concejo</span><span class="lane">Clientes</span><span class="lane">Empresa</span><span class="lane">Personal</span><span class="lane">Hyrox</span></div>
+          <svg class="merge" viewBox="0 0 320 92" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="none" stroke="#17201C" stroke-opacity=".16" stroke-width="1">
+              <path d="M96 0 V40 H160 V92"/><path d="M160 0 V92"/><path d="M224 0 V40 H160"/><path d="M288 0 V40 H160"/>
+            </g>
+            <path d="M32 0 V40 H160 V92" fill="none" stroke="#2F8FA6" stroke-width="2"/>
+          </svg>
+          <div class="card">
+            <div class="court">
+              <div class="water"></div>
+              <div class="eyb">Concejo · 1 de 4</div>
+              <h3 style="margin-top:8px">Revisar el proyecto de acuerdo de presupuesto 2027</h3>
+              <p>Marcar artículos con riesgo jurídico y preparar observaciones para la comisión.</p>
+              <div class="meta"><b>●</b> En cola hace 10 días</div>
+              <div class="acts" style="margin-top:20px"><span class="p">Hecho</span><span class="s">Empezar</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tabbar"><b>Ahora</b><span>Carriles</span><span>Semana</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close">
+    <span class="eyebrow">Siguiente paso</span>
+    <h2>Escoge una, o mezcla</h2>
+    <p>Se vale tomar la tipografía de una y la paleta de otra. Por ejemplo: el arco de Portal con la disciplina de Pista. La dirección escogida se convierte en tokens encima de shadcn/ui, y de ahí salen los componentes firma, el movimiento, el ícono y la PWA.</p>
+    <p>Las tres se muestran en claro, como pide el brief. El modo oscuro se deriva después de la dirección elegida.</p>
+  </section>
+</div>

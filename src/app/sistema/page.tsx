@@ -41,7 +41,7 @@ const CORE = [
   { token: "maya", name: "Azul maya", note: "Acento: líneas y foco" },
   { token: "maya-ink", name: "Maya tinta", note: "Acento para texto" },
   { token: "portal", name: "Luz de patio", note: "Interior del arco" },
-  { token: "rot", name: "Ocre Izamal", note: "Tarea pudriéndose" },
+  { token: "aging", name: "Ocre Izamal", note: "Tarea rezagada" },
   { token: "destructive", name: "Flamboyán", note: "Acciones destructivas" },
 ];
 
@@ -143,7 +143,7 @@ export default function SistemaPage() {
         </div>
       </Section>
 
-      <Section id="color" title="Color" lede="Tokens semánticos. En código se usan por nombre (bg-maya, text-rot), nunca con hex.">
+      <Section id="color" title="Color" lede="Tokens semánticos. En código se usan por nombre (bg-maya, text-aging), nunca con hex.">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {CORE.map((c) => (
             <div key={c.token} className="overflow-hidden rounded-md ring-1 ring-border">
@@ -256,8 +256,7 @@ export default function SistemaPage() {
               <Badge>En curso</Badge>
               <Badge variant="secondary">4 en cola</Badge>
               <Badge variant="outline">Modo libre</Badge>
-              <Badge variant="outline" className="border-rot text-rot">Pudriéndose</Badge>
-              <Badge variant="destructive">Vencida</Badge>
+              <Badge variant="outline" className="border-aging text-aging">Rezagada</Badge>
             </div>
           </div>
 
@@ -319,7 +318,7 @@ export default function SistemaPage() {
                 <TooltipTrigger asChild>
                   <Button variant="outline">Ayuda</Button>
                 </TooltipTrigger>
-                <TooltipContent>Una tarea con 7 días o más en cola se marca en ocre.</TooltipContent>
+                <TooltipContent>Una tarea con 7 días o más en cola se marca como rezagada (ajustable).</TooltipContent>
               </Tooltip>
               <ToastDemo />
             </div>

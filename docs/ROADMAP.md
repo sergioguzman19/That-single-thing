@@ -1,0 +1,107 @@
+# That Single Thing · Plan de implementación
+
+Plan auditado el 2026-10-07. Es la fuente de verdad para el ciclo de desarrollo por fases.
+Si una decisión cambia, se actualiza aquí y en `CLAUDE.md`.
+
+## Principios del producto
+
+1. **Una sola cosa visible.** Todo lo demás existe, pero no compite por la atención.
+2. **Una línea de producción, no un calendario.** La fábrica es la atención; los carriles son los insumos. La línea recibe y saca. Programar fechas de entrega es otro proceso: **la app nunca tiene fechas límite**.
+3. **La cola manda.** La prioridad es solo el orden manual de cada carril. Sin campos de prioridad ni urgencia.
+4. **Decidir una vez, ejecutar siempre.** Los bloques deciden qué carril despacha; tú solo decides cuando el bloque está abierto o cuando te sales del plan.
+5. **Flexible sin culpa.** Salirse del plan, dejar algo sin terminar o mandarlo al final es legítimo.
+
+## Reglas del motor de despacho
+
+El motor es una **función pura** (`src/lib/dispatch.ts`, fase 3): recibe hora actual, zona horaria del perfil, carriles, colas, bloques y foco; devuelve la tarea visible y el estado. Corre en el cliente. Cada regla tiene prueba.
+
+| Situación | Qué carril despacha | Qué se ve |
+|---|---|---|
+| **Bloque programado** (viernes PM → Clientes) | El del bloque | La primera de su cola |
+| **Bloque abierto** (sábado 3 pm, nada programado) | El que tú escojas | Antes de escoger: "Bloque abierto: ¿qué carril despacha?" |
+| **Fuera del plan** (en un bloque programado tocas otro carril) | El que tocaste | La primera de su cola, con opción "volver al plan" |
+| **Carril del bloque vacío** | Ninguno hasta que decidas | Ofrece escoger otro carril o capturar |
+
+- **Duración del foco** (fuera del plan o escogido en bloque abierto): hasta que empiece el siguiente bloque programado o termine el día, lo que llegue primero. Se guarda en `profiles.focus_lane_id` y `focus_until`, y cada foco se registra en `focus_events`.
+- **Siempre la cabeza de la cola.** Ninguna regla sube una tarea que no sea la primera de su carril.
+- **Tarea sin terminar al acabar el bloque:** antes de mostrar la tarea del siguiente bloque se pregunta "¿Terminaste X?". Si no, sigue de primera en su carril y vuelve a ser *that single thing* cuando le toque a ese carril, por programación o por decisión. En el MVP la pregunta sale al abrir la app; con notificaciones (fase 5), al terminar el bloque.
+- **"En curso"** = la tarea ya se empezó (`started_at`). Puede haber varias en curso, una por carril; la tarea visible siempre es una.
+- **Rezagada:** tarea con N días o más en cola (N = `profiles.aging_days`, 7 por defecto, ajustable). Es informativa, no cambia el orden. El carril muestra cuántas rezagadas tiene.
+- **Hora:** los bloques se guardan en minutos de la hora local del perfil (`profiles.timezone`). Nunca se calcula "ahora" en el servidor.
+
+## Límites del modelo
+
+- Máximo **6 carriles** activos (lo hace cumplir la base de datos). 7 colores disponibles.
+- Bloques: en la base de datos, rangos libres en minutos. En la interfaz, franjas predefinidas (mañana, tarde, noche) que se pueden ajustar.
+- Orden de la cola: `position` fraccionaria. Al final = máximo + 1; saltar la fila = mínimo − 1; mover entre dos = punto medio. Desempate por `created_at`.
+
+## Fases
+
+Cada fase se cierra con su **definición de terminado** (ver abajo) y tu aprobación desde el celular.
+
+### Fase 0.5 · Base del ciclo ✅ (rama `fase-0.5`)
+Plan auditado, reglas corregidas en `CLAUDE.md`, "pudriéndose" → "rezagada", migración de ajustes (`aging_days`, colores válidos, máximo 6 carriles, `focus_events`), Vitest, CI en GitHub Actions, Node 24 fijado.
+
+### Fase 1 · Acceso
+- Login con **código de 6 dígitos por correo** (OTP de Supabase), con el enlace como alternativa. Motivo: en iPhone, la app instalada no comparte sesión con Safari.
+- **Antes del primer login en producción:** Site URL de Supabase = `https://thatsingleting.vercel.app`, plantilla del correo con `{{ .Token }}`, Redirect URLs de producción y local.
+- Rutas protegidas, cerrar sesión, portada real en lugar de la de Next.
+- Primer ingreso: se crean tus 5 carriles (Concejo, Clientes, Empresa, Personal, Hyrox), editables.
+- **Aceptación:** entras con código desde el iPhone (app instalada) y desde el computador; sin sesión no ves nada.
+
+### Fase 2 · Carriles y captura
+- Carriles: crear, renombrar, cambiar color, reordenar, archivar (máximo 6).
+- Captura rápida con **+**: título, descripción opcional, carril, "saltar la fila".
+- Cola: arrastrar para ordenar (y flechas como alternativa accesible), **editar tarea**, **mover a otro carril**, eliminar.
+- Rezagadas: indicador en la tarea y conteo por carril.
+- **Aceptación:** vacías todos tus pendientes reales en la app desde el celular en pocos minutos.
+
+### Fase 3 · Ahora
+- Motor de despacho (función pura con pruebas de cada regla de la tabla).
+- Pantalla Ahora: Merge + Portal + movimiento del sistema de diseño.
+- Hecho (con **deshacer**), Empezar, Mandar al final, tocar otro carril (fuera del plan), escoger carril en bloque abierto, "volver al plan".
+- Pregunta "¿Terminaste X?" al cambiar de bloque. Contador de hechas hoy.
+- **Aceptación:** la usas un día completo solo con esta pantalla.
+
+### Fase 4 · Semana
+- Editor de bloques por día con franjas ajustables, sin cruces (la base de datos lo impide).
+- Balance de horas por carril.
+- **Aceptación:** configuras tu semana real y el martes 7 am sube Concejo sin tocar nada.
+
+### Fase 5 · App de verdad
+- Notificaciones push (service worker + VAPID) al empezar y al terminar cada bloque. El programador será **pg_cron de Supabase**, porque el cron de Vercel Hobby no da precisión de minutos.
+- Pantalla base sin conexión y actualizaciones optimistas en toda la app.
+
+### Fase 6 · Producto
+- Ajustes: días para rezagada, zona horaria. Historial de hechas. Exportar mis datos.
+- Antes de abrir a más gente: SMTP propio (p. ej. Resend), repo privado y licencia, plan de Vercel (Hobby no permite uso comercial) y de Supabase (el gratis se pausa tras 7 días sin uso y no tiene backups).
+
+## Ciclo por fase
+
+1. Plan corto de la fase: alcance, criterios de aceptación, casos borde.
+2. Rama `fase-N` desde `main`.
+3. Construir. Las migraciones van en `supabase/migrations` y luego se regeneran los tipos (`npm run db:types`).
+4. Verificar: `npm run check` (typecheck, lint, pruebas, build) + revisión visual en celular y escritorio, claro y oscuro.
+5. Pull request → CI en verde → URL de prueba de Vercel → la pruebas en el celular.
+6. Con tu aprobación: unir a `main` → producción.
+7. Actualizar este documento, `CLAUDE.md` y `/sistema` si algo cambió.
+
+**Ojo:** hay un solo proyecto de Supabase. Una migración aplicada desde una rama afecta producción, así que las migraciones deben ser compatibles con el código que está en `main`.
+
+## Métricas de éxito (MVP)
+
+- Uso 5 de 7 días durante 2 semanas (`tasks.completed_at`).
+- Te sales del plan menos del 20 % de los bloques (`focus_events` de tipo `override`).
+- Ningún carril pasa más de 7 días sin despachar una tarea.
+
+## Fuera del MVP (decidido)
+
+- **Fechas límite:** nunca (principio 2).
+- **Tareas recurrentes:** después de usar la app.
+- **Captura desde fuera** (correo, WhatsApp): el usuario tiene otro plan con un agente; después del MVP. La arquitectura (Server Actions sobre Supabase con RLS) lo permite.
+- **Login con Google o Apple:** opcional en la fase 6.
+
+## Riesgos abiertos
+
+- Vulnerabilidades en herramientas de desarrollo (CLI de shadcn y lint de Next, vía `braces`). Producción: 0. Revisar cuando haya actualizaciones.
+- El repo es público con licencia MIT: decidir antes de la fase 6.

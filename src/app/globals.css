@@ -57,7 +57,7 @@
   --color-maya-ink: var(--maya-ink);     /* acento para texto (AA sobre fondo) */
   --color-portal: var(--portal);         /* luz dentro del arco */
   --color-portal-edge: var(--portal-edge);
-  --color-rot: var(--rot);               /* tarea pudriéndose (ocre Izamal) */
+  --color-aging: var(--aging);           /* tarea rezagada (ocre Izamal) */
 
   /* Carriles: el usuario elige uno por carril */
   --color-lane-maya: var(--lane-maya);
@@ -103,7 +103,7 @@
   --maya-ink: oklch(0.539 0.082 217.4);          /* #287A8E · 4.9:1 */
   --portal: oklch(0.975 0.007 219.6);            /* #F2F8FA */
   --portal-edge: oklch(0.931 0.016 216.7);       /* #DDEBEF */
-  --rot: oklch(0.561 0.112 75.8);                /* #9A6A12 · 4.7:1 */
+  --aging: oklch(0.561 0.112 75.8);              /* #9A6A12 · 4.7:1 */
 
   --lane-maya: oklch(0.605 0.093 217.2);         /* #2F8FA6 */
   --lane-patio: oklch(0.489 0.061 161.3);        /* #3F6B55 */
@@ -154,7 +154,7 @@
   --maya-ink: oklch(0.717 0.098 216.1);
   --portal: oklch(0.24 0.025 215);
   --portal-edge: oklch(0.32 0.04 216);
-  --rot: oklch(0.767 0.138 81);                  /* #E0A93A */
+  --aging: oklch(0.767 0.138 81);                /* #E0A93A */
 
   --lane-maya: oklch(0.717 0.098 216.1);
   --lane-patio: oklch(0.66 0.07 161);

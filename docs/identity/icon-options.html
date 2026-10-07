@@ -37,6 +37,16 @@ h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 
 .sizes figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
 .sizes figcaption { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .sizes .tab { display: flex; align-items: center; gap: 6px; background: #F3F5F4; border-radius: 6px 6px 0 0; padding: 6px 10px; font-size: 11px; }
+.grid { grid-template-columns: minmax(0, 1fr); }
+.vers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .vers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ver { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.ver .code { font-family: var(--mono); font-size: 11px; color: var(--muted); justify-self: start; }
+.ver .light { background: #F3F5F4; border-radius: 8px; width: 100%; display: grid; place-items: center; padding: 14px 6px; }
+.ver .light .icon { width: 96px; height: 96px; }
+.ver .dark { background: var(--night); border-radius: 8px; width: 100%; display: grid; place-items: center; padding: 10px 6px; }
+.ver .tiny { display: flex; align-items: center; gap: 10px; }
+.ver figcaption { font-family: var(--display); font-size: 18px; }
 .verdict { font-size: 13px; border-left: 2px solid var(--rule); padding-left: 10px; color: var(--ink); }
 .verdict b { font-weight: 600; }
 .note { margin-top: 40px; border-top: 1px solid var(--ink); padding-top: 16px; max-width: 70ch; }
@@ -46,8 +56,8 @@ h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 
 
 <div class="wrap">
   <span class="eyebrow">That Single Thing · Pilar de diseño · Ícono</span>
-  <h1>Seis ideas de ícono</h1>
-  <p class="lede">Todas salen de la identidad Portal: el arco, la convergencia y el azul maya. Cada una se ve en su tamaño de pantalla de inicio sobre claro y oscuro, y en los tamaños donde se gana o se pierde un ícono: 60, 32 y 16 px (la pestaña del navegador). Son bocetos vectoriales para escoger una idea; el acabado final sale del prompt.</p>
+  <h1>Seis ideas de ícono, con letras</h1>
+  <p class="lede">Cada concepto aparece en cuatro versiones: el original y tres con letra, <b>T</b> (That), <b>S</b> (Single) y el monograma <b>TST</b>. Para pedir una, usa su código: por ejemplo "3A" es Portal de noche con T. Todas salen de la identidad Portal: el arco, la convergencia y el azul maya. Cada versión se ve grande sobre claro, mediana sobre oscuro y en 32 y 16 px, que es donde se gana o se pierde un ícono. Son bocetos vectoriales para escoger una idea; el acabado final sale del prompt.</p>
   <div class="grid" id="grid"></div>
 
   <section class="note">
@@ -64,70 +74,78 @@ const arch = (x1, x2, top, bottom) => {
   const r = (x2 - x1) / 2, cy = top + r;
   return `M${x1} ${bottom} V${cy} A${r} ${r} 0 0 1 ${x2} ${cy} V${bottom} Z`;
 };
-const mask = id => `<clipPath id="${id}"><rect width="100" height="100" rx="22.4"/></clipPath>`;
+const clip = id => `<clipPath id="${id}"><rect width="100" height="100" rx="22.4"/></clipPath>`;
+// Letra en Marcellus. Una letra va grande; el monograma TST va más chico y espaciado.
+const letter = (L, y, big, small, fill) =>
+  `<text x="50" y="${y}" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="${L.length > 1 ? small : big}" ${L.length > 1 ? 'letter-spacing="1"' : ''} fill="${fill}">${L}</text>`;
+const lanes = (xs, y0, y1, active) => xs.map((x, i) =>
+  `<path d="M${x} ${y0} C${x} ${y0 + (y1 - y0) * .55}, 50 ${y0 + (y1 - y0) * .5}, 50 ${y1}" fill="none" stroke="${i === active ? MAYA : INK}" stroke-opacity="${i === active ? 1 : .28}" stroke-width="${i === active ? 5 : 3.5}" stroke-linecap="round"/>`).join('');
 
+const LETTERS = ['T', 'S', 'TST'];
 const OPTIONS = [
   {
-    name: 'Umbral', idea: 'El arco vacío con un solo punto adentro: la única cosa en el umbral.',
-    verdict: '<b>Lo mejor:</b> sereno y clarísimo. <b>Ojo:</b> a 16 px el trazo del arco se adelgaza.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
-      <path d="${arch(28, 72, 20, 82)}" fill="${PORTAL}" stroke="${INK}" stroke-width="4.5"/>
-      <circle cx="50" cy="62" r="6" fill="${MAYA}"/></g>`,
+    name: 'Umbral', idea: 'El arco con un solo elemento adentro: un punto o la letra.',
+    frame: `<rect width="100" height="100" fill="${W}"/><path d="${arch(28, 72, 20, 82)}" fill="${PORTAL}" stroke="${INK}" stroke-width="4.5"/>`,
+    base: `<circle cx="50" cy="62" r="6" fill="${MAYA}"/>`,
+    letter: L => letter(L, 72, 32, 15, MAYA),
   },
   {
-    name: 'Convergencia', idea: 'Cinco carriles que bajan y se vuelven uno. El concepto de la app sin dibujar el arco.',
-    verdict: '<b>Lo mejor:</b> cuenta la idea entera. <b>Ojo:</b> las líneas finas desaparecen en tamaños chicos.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
-      ${[24, 37, 50, 63, 76].map((x, i) => `<path d="M${x} 14 C${x} 46, 50 42, 50 72" fill="none" stroke="${i === 0 ? MAYA : INK}" stroke-opacity="${i === 0 ? 1 : .28}" stroke-width="${i === 0 ? 5 : 3.5}" stroke-linecap="round"/>`).join('')}
-      <circle cx="50" cy="78" r="6" fill="${MAYA}"/></g>`,
+    name: 'Convergencia', idea: 'Los carriles bajan y se vuelven uno; en las versiones con letra, desembocan en ella.',
+    frame: `<rect width="100" height="100" fill="${W}"/>`,
+    base: lanes([24, 37, 50, 63, 76], 14, 72, 0) + `<circle cx="50" cy="78" r="6" fill="${MAYA}"/>`,
+    letter: L => lanes([24, 37, 50, 63, 76], 12, 56, 0) + letter(L, 88, 32, 19, INK),
   },
   {
-    name: 'Portal de noche', idea: 'Fondo sombra verde con el arco recortado en blanco y el agua del patio al pie.',
-    verdict: '<b>Lo mejor:</b> el más fuerte entre otras apps, y se lee perfecto a 16 px. <b>Ojo:</b> es oscuro, aunque la app sea clara.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${INK}"/>
-      <path d="${arch(28, 72, 18, 84)}" fill="${W}"/>
-      <rect x="28" y="72" width="44" height="12" fill="${MAYA}"/></g>`,
+    name: 'Portal de noche', idea: 'Fondo sombra verde, arco recortado en blanco y el agua del patio al pie.',
+    frame: `<rect width="100" height="100" fill="${INK}"/><path d="${arch(28, 72, 18, 84)}" fill="${W}"/><rect x="28" y="72" width="44" height="12" fill="${MAYA}"/>`,
+    base: '',
+    letter: L => letter(L, 64, 30, 14, INK),
   },
   {
-    name: 'Portal maya', idea: 'Fondo azul maya, arco blanco y el punto en tinta: el color de la marca como protagonista.',
-    verdict: '<b>Lo mejor:</b> color propio y reconocible; nadie más tiene este azul con un arco. <b>Ojo:</b> más llamativo que calmado.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${MAYA}"/>
-      <path d="${arch(28, 72, 18, 84)}" fill="${W}"/>
-      <circle cx="50" cy="64" r="6.5" fill="${INK}"/></g>`,
+    name: 'Portal maya', idea: 'Fondo azul maya, arco blanco y el elemento en tinta.',
+    frame: `<rect width="100" height="100" fill="${MAYA}"/><path d="${arch(28, 72, 18, 84)}" fill="${W}"/>`,
+    base: `<circle cx="50" cy="64" r="6.5" fill="${INK}"/>`,
+    letter: L => letter(L, 74, 34, 15, INK),
   },
   {
-    name: 'Uno', idea: 'El arco con un "1" en la tipografía de inscripción: una sola cosa, literal.',
-    verdict: '<b>Lo mejor:</b> elegante y muy de la marca. <b>Ojo:</b> el número puede leerse como "notificaciones: 1" o como un ranking.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
-      <path d="${arch(26, 74, 16, 86)}" fill="${PORTAL}" stroke="${EDGE}" stroke-width="2"/>
-      <text x="50" y="74" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="46" fill="${INK}">1</text></g>`,
+    name: 'Inscripción', idea: 'Una letra tallada dentro del arco, como la inscripción sobre un portal. El original es el "1".',
+    frame: `<rect width="100" height="100" fill="${W}"/><path d="${arch(26, 74, 16, 86)}" fill="${PORTAL}" stroke="${EDGE}" stroke-width="2"/>`,
+    base: letter('1', 74, 46, 46, INK),
+    letter: L => letter(L, 74, 46, 19, INK),
   },
   {
-    name: 'Carril al portal', idea: 'Las líneas tenues bajan hasta la clave del arco y adentro sigue una sola, azul, hasta el punto.',
-    verdict: '<b>Lo mejor:</b> une convergencia y portal en una sola imagen. <b>Ojo:</b> es el más detallado; a 16 px queda solo el arco.',
-    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
-      ${[18, 34, 66, 82].map(x => `<path d="M${x} 0 C${x} 22, 50 14, 50 30" fill="none" stroke="${INK}" stroke-opacity=".22" stroke-width="2.5"/>`).join('')}
-      <path d="${arch(28, 72, 30, 88)}" fill="${PORTAL}" stroke="${INK}" stroke-width="3.5"/>
-      <path d="M50 0 V68" stroke="${MAYA}" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="50" cy="72" r="5.5" fill="${MAYA}"/></g>`,
+    name: 'Carril al portal', idea: 'Las líneas bajan a la clave del arco y adentro sigue una sola. Con letra, ese carril se convierte en ella.',
+    frame: `<rect width="100" height="100" fill="${W}"/>${[18, 34, 66, 82].map(x => `<path d="M${x} 0 C${x} 22, 50 14, 50 30" fill="none" stroke="${INK}" stroke-opacity=".22" stroke-width="2.5"/>`).join('')}<path d="${arch(28, 72, 30, 88)}" fill="${PORTAL}" stroke="${INK}" stroke-width="3.5"/>`,
+    base: `<path d="M50 0 V68" stroke="${MAYA}" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="72" r="5.5" fill="${MAYA}"/>`,
+    letter: L => L === 'T'
+      // El carril es el fuste de la T; el travesaño cruza el arco.
+      ? `<path d="M50 0 V78 M37 54 H63" fill="none" stroke="${MAYA}" stroke-width="4.5" stroke-linecap="round"/>`
+      : `<path d="M50 0 V${L === 'S' ? 44 : 50}" stroke="${MAYA}" stroke-width="4" stroke-linecap="round"/>` + letter(L, 80, 32, 14, MAYA),
   },
 ];
 
 const grid = document.getElementById('grid');
+let uid = 0;
+const icon = (inner, size) => {
+  const id = 'c' + uid++;
+  return `<svg ${size ? `width="${size}" height="${size}"` : 'class="icon"'} viewBox="0 0 100 100" role="img"><defs>${clip(id)}</defs><g clip-path="url(#${id})">${inner}</g></svg>`;
+};
 OPTIONS.forEach((o, i) => {
-  const icon = (size, suffix) => `<svg class="${size ? '' : 'icon'}" ${size ? `width="${size}" height="${size}"` : ''} viewBox="0 0 100 100" role="img" aria-label="${o.name}">${o.svg(`m${i}${suffix}`)}</svg>`;
+  const versions = [{ label: 'Original', inner: o.frame + o.base }, ...LETTERS.map(L => ({ label: L, inner: o.frame + o.letter(L) }))];
   const el = document.createElement('article');
   el.className = 'opt';
   el.innerHTML = `
     <header><span class="n">${i + 1}</span><h2>${o.name}</h2></header>
     <p>${o.idea}</p>
-    <div class="stage"><div class="light">${icon(0, 'a')}</div><div class="dark">${icon(0, 'b')}</div></div>
-    <div class="sizes">
-      <figure>${icon(60, 'c')}<figcaption>60</figcaption></figure>
-      <figure>${icon(32, 'd')}<figcaption>32</figcaption></figure>
-      <figure><span class="tab">${icon(16, 'e')} That Single Thing</span><figcaption>16 · pestaña</figcaption></figure>
-    </div>
-    <p class="verdict">${o.verdict}</p>`;
+    <div class="vers">${versions.map((v, k) => `
+      <figure class="ver">
+        <span class="code">${i + 1}${'·ABC'[k] === '·' ? '' : '·ABC'[k]}</span>
+        <div class="light">${icon(v.inner)}</div>
+        <div class="dark">${icon(v.inner, 44)}</div>
+        <div class="tiny">${icon(v.inner, 32)}${icon(v.inner, 16)}</div>
+        <figcaption>${v.label}</figcaption>
+      </figure>`).join('')}
+    </div>`;
   grid.appendChild(el);
 });
 </script>

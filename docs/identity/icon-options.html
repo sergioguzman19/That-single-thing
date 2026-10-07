@@ -1,0 +1,133 @@
+<title>That Single Thing · Ícono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
+<style>
+/* Layout: una ficha por concepto; cada una muestra el ícono grande sobre fondo claro y oscuro, y los tamaños reales (60, 32, 16 px). Tema claro deliberado: es la identidad elegida. */
+:root {
+  color-scheme: light;
+  --page: #FFFFFF;
+  --ink: #16211D;
+  --muted: #6B7370;
+  --rule: #E4E7E6;
+  --maya: #2F8FA6;
+  --portal: #F2F8FA;
+  --night: #0F1513;
+  --display: "Marcellus", Georgia, serif;
+  --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+body { background: var(--page); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 80px; }
+.eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 56px); line-height: 1.02; margin: 10px 0 12px; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 36px; }
+.opt { border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: grid; gap: 14px; align-content: start; }
+.opt header { display: flex; align-items: baseline; gap: 10px; }
+.opt .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.opt h2 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 0; }
+.opt p { margin: 0; color: var(--muted); font-size: 14px; }
+.stage { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stage div { border-radius: 8px; display: grid; place-items: center; padding: 18px 8px; }
+.stage .light { background: #F3F5F4; }
+.stage .dark { background: var(--night); }
+.icon { display: block; width: 112px; height: 112px; filter: drop-shadow(0 6px 14px rgba(15,21,19,.18)); }
+.sizes { display: flex; align-items: flex-end; gap: 16px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.sizes figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.sizes figcaption { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.sizes .tab { display: flex; align-items: center; gap: 6px; background: #F3F5F4; border-radius: 6px 6px 0 0; padding: 6px 10px; font-size: 11px; }
+.verdict { font-size: 13px; border-left: 2px solid var(--rule); padding-left: 10px; color: var(--ink); }
+.verdict b { font-weight: 600; }
+.note { margin-top: 40px; border-top: 1px solid var(--ink); padding-top: 16px; max-width: 70ch; }
+.note h2 { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 4px 0 6px; }
+.note p { color: var(--muted); margin: 0 0 8px; }
+</style>
+
+<div class="wrap">
+  <span class="eyebrow">That Single Thing · Pilar de diseño · Ícono</span>
+  <h1>Seis ideas de ícono</h1>
+  <p class="lede">Todas salen de la identidad Portal: el arco, la convergencia y el azul maya. Cada una se ve en su tamaño de pantalla de inicio sobre claro y oscuro, y en los tamaños donde se gana o se pierde un ícono: 60, 32 y 16 px (la pestaña del navegador). Son bocetos vectoriales para escoger una idea; el acabado final sale del prompt.</p>
+  <div class="grid" id="grid"></div>
+
+  <section class="note">
+    <span class="eyebrow">Cómo escoger</span>
+    <h2>Mira primero el de 16 px</h2>
+    <p>Un ícono se reconoce o no en la pestaña del navegador y en la pantalla de inicio llena de apps. Si a 16 px se vuelve una mancha, la idea no sirve, aunque se vea bonita en grande.</p>
+  </section>
+</div>
+
+<script>
+const INK = '#16211D', MAYA = '#2F8FA6', PORTAL = '#F2F8FA', EDGE = '#DDEBEF', W = '#FFFFFF';
+// Arco del portal: medio punto arriba, jambas rectas.
+const arch = (x1, x2, top, bottom) => {
+  const r = (x2 - x1) / 2, cy = top + r;
+  return `M${x1} ${bottom} V${cy} A${r} ${r} 0 0 1 ${x2} ${cy} V${bottom} Z`;
+};
+const mask = id => `<clipPath id="${id}"><rect width="100" height="100" rx="22.4"/></clipPath>`;
+
+const OPTIONS = [
+  {
+    name: 'Umbral', idea: 'El arco vacío con un solo punto adentro: la única cosa en el umbral.',
+    verdict: '<b>Lo mejor:</b> sereno y clarísimo. <b>Ojo:</b> a 16 px el trazo del arco se adelgaza.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
+      <path d="${arch(28, 72, 20, 82)}" fill="${PORTAL}" stroke="${INK}" stroke-width="4.5"/>
+      <circle cx="50" cy="62" r="6" fill="${MAYA}"/></g>`,
+  },
+  {
+    name: 'Convergencia', idea: 'Cinco carriles que bajan y se vuelven uno. El concepto de la app sin dibujar el arco.',
+    verdict: '<b>Lo mejor:</b> cuenta la idea entera. <b>Ojo:</b> las líneas finas desaparecen en tamaños chicos.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
+      ${[24, 37, 50, 63, 76].map((x, i) => `<path d="M${x} 14 C${x} 46, 50 42, 50 72" fill="none" stroke="${i === 0 ? MAYA : INK}" stroke-opacity="${i === 0 ? 1 : .28}" stroke-width="${i === 0 ? 5 : 3.5}" stroke-linecap="round"/>`).join('')}
+      <circle cx="50" cy="78" r="6" fill="${MAYA}"/></g>`,
+  },
+  {
+    name: 'Portal de noche', idea: 'Fondo sombra verde con el arco recortado en blanco y el agua del patio al pie.',
+    verdict: '<b>Lo mejor:</b> el más fuerte entre otras apps, y se lee perfecto a 16 px. <b>Ojo:</b> es oscuro, aunque la app sea clara.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${INK}"/>
+      <path d="${arch(28, 72, 18, 84)}" fill="${W}"/>
+      <rect x="28" y="72" width="44" height="12" fill="${MAYA}"/></g>`,
+  },
+  {
+    name: 'Portal maya', idea: 'Fondo azul maya, arco blanco y el punto en tinta: el color de la marca como protagonista.',
+    verdict: '<b>Lo mejor:</b> color propio y reconocible; nadie más tiene este azul con un arco. <b>Ojo:</b> más llamativo que calmado.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${MAYA}"/>
+      <path d="${arch(28, 72, 18, 84)}" fill="${W}"/>
+      <circle cx="50" cy="64" r="6.5" fill="${INK}"/></g>`,
+  },
+  {
+    name: 'Uno', idea: 'El arco con un "1" en la tipografía de inscripción: una sola cosa, literal.',
+    verdict: '<b>Lo mejor:</b> elegante y muy de la marca. <b>Ojo:</b> el número puede leerse como "notificaciones: 1" o como un ranking.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
+      <path d="${arch(26, 74, 16, 86)}" fill="${PORTAL}" stroke="${EDGE}" stroke-width="2"/>
+      <text x="50" y="74" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="46" fill="${INK}">1</text></g>`,
+  },
+  {
+    name: 'Carril al portal', idea: 'Las líneas tenues bajan hasta la clave del arco y adentro sigue una sola, azul, hasta el punto.',
+    verdict: '<b>Lo mejor:</b> une convergencia y portal en una sola imagen. <b>Ojo:</b> es el más detallado; a 16 px queda solo el arco.',
+    svg: id => `<defs>${mask(id)}</defs><g clip-path="url(#${id})"><rect width="100" height="100" fill="${W}"/>
+      ${[18, 34, 66, 82].map(x => `<path d="M${x} 0 C${x} 22, 50 14, 50 30" fill="none" stroke="${INK}" stroke-opacity=".22" stroke-width="2.5"/>`).join('')}
+      <path d="${arch(28, 72, 30, 88)}" fill="${PORTAL}" stroke="${INK}" stroke-width="3.5"/>
+      <path d="M50 0 V68" stroke="${MAYA}" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="50" cy="72" r="5.5" fill="${MAYA}"/></g>`,
+  },
+];
+
+const grid = document.getElementById('grid');
+OPTIONS.forEach((o, i) => {
+  const icon = (size, suffix) => `<svg class="${size ? '' : 'icon'}" ${size ? `width="${size}" height="${size}"` : ''} viewBox="0 0 100 100" role="img" aria-label="${o.name}">${o.svg(`m${i}${suffix}`)}</svg>`;
+  const el = document.createElement('article');
+  el.className = 'opt';
+  el.innerHTML = `
+    <header><span class="n">${i + 1}</span><h2>${o.name}</h2></header>
+    <p>${o.idea}</p>
+    <div class="stage"><div class="light">${icon(0, 'a')}</div><div class="dark">${icon(0, 'b')}</div></div>
+    <div class="sizes">
+      <figure>${icon(60, 'c')}<figcaption>60</figcaption></figure>
+      <figure>${icon(32, 'd')}<figcaption>32</figcaption></figure>
+      <figure><span class="tab">${icon(16, 'e')} That Single Thing</span><figcaption>16 · pestaña</figcaption></figure>
+    </div>
+    <p class="verdict">${o.verdict}</p>`;
+  grid.appendChild(el);
+});
+</script>

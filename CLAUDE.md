@@ -21,6 +21,11 @@ Web app responsiva: varios carriles (frentes de vida) con colas de tareas que co
   - Tarea sin terminar al acabar el bloque → se pregunta; si no se terminó, sigue de primera en su carril.
   - El motor de despacho es una función pura con hora + zona horaria; nunca calcular "ahora" en el servidor.
 
+## Acceso
+- Solo con invitación: registro público apagado; usuarios creados desde el panel de Supabase. Login por código OTP de 6 dígitos (`src/app/entrar`).
+- Sesión: `src/proxy.ts` redirige de forma optimista; la verificación real es `requireUser()` / `getUser()` en `src/lib/auth.ts`, llamada cerca de los datos (`src/lib/data`).
+- Configuración de auth en `supabase/config.toml` → `npx supabase config diff` y `config push`.
+
 ## Plan y ciclo
 - Plan auditado, fases y definición de terminado: `docs/ROADMAP.md`.
 - Una rama por fase (`fase-N`), PR con CI en verde, aprobación del usuario y luego merge a `main` (producción).

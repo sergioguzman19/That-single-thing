@@ -42,12 +42,15 @@ Cada fase se cierra con su **definición de terminado** (ver abajo) y tu aprobac
 ### Fase 0.5 · Base del ciclo ✅ (rama `fase-0.5`)
 Plan auditado, reglas corregidas en `CLAUDE.md`, "pudriéndose" → "rezagada", migración de ajustes (`aging_days`, colores válidos, máximo 6 carriles, `focus_events`), Vitest, CI en GitHub Actions, Node 24 fijado.
 
-### Fase 1 · Acceso
-- Login con **código de 6 dígitos por correo** (OTP de Supabase), con el enlace como alternativa. Motivo: en iPhone, la app instalada no comparte sesión con Safari.
-- **Antes del primer login en producción:** Site URL de Supabase = `https://thatsingleting.vercel.app`, plantilla del correo con `{{ .Token }}`, Redirect URLs de producción y local.
-- Rutas protegidas, cerrar sesión, portada real en lugar de la de Next.
-- Primer ingreso: se crean tus 5 carriles (Concejo, Clientes, Empresa, Personal, Hyrox), editables.
-- **Aceptación:** entras con código desde el iPhone (app instalada) y desde el computador; sin sesión no ves nada.
+### Fase 1 · Acceso (rama `fase-1`)
+- **Solo con invitación.** No hay registro público (apagado en Supabase, `config.toml`). Los usuarios se crean desde el panel de Supabase (*Authentication → Users → Add user*). Un correo sin registrar ve "Este correo no está registrado" y no recibe nada (`shouldCreateUser: false`).
+- Login con **código de 6 dígitos por correo** (OTP, vence en 10 minutos, reenvío cada 60 s). Motivo: en iPhone, la app instalada no comparte sesión con Safari.
+- **Correo propio (SMTP):** el plan gratis de Supabase no deja cambiar la plantilla con su correo por defecto, y la plantilla por defecto no trae el código. Se configura un SMTP (Resend) y luego la plantilla `supabase/templates/codigo.html`. También sube el límite de envíos.
+- Configuración de auth versionada en `supabase/config.toml` y aplicada con `supabase config push`: Site URL de producción, Redirect URLs, registro apagado, OTP de 6 dígitos.
+- Rutas protegidas (proxy + `requireUser()` cerca de los datos), cerrar sesión, portada = pantalla de entrada.
+- Esqueleto de la app: Ahora · Carriles · Semana (barra inferior en el celular, pestañas en escritorio), menú de cuenta y botón de captura.
+- Los carriles de un usuario nuevo **no** se crean solos: los de Sergio se cargan al registrarlo; un usuario nuevo los crea en la fase 2.
+- **Aceptación:** entras con el código desde el iPhone (app instalada) y desde el computador; sin sesión no ves nada; un correo no registrado no entra.
 
 ### Fase 2 · Carriles y captura
 - Carriles: crear, renombrar, cambiar color, reordenar, archivar (máximo 6).

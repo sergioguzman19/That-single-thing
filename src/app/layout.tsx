@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Hanken_Grotesk, Marcellus } from "next/font/google";
+import Script from "next/script";
 import { Providers } from "@/components/providers";
+import { THEME_SCRIPT } from "@/lib/theme-script";
 import "./globals.css";
 
 const hanken = Hanken_Grotesk({
@@ -39,6 +41,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${hanken.variable} ${marcellus.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Script id="theme" strategy="beforeInteractive">
+          {THEME_SCRIPT}
+        </Script>
         <Providers>{children}</Providers>
       </body>
     </html>

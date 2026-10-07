@@ -1,15 +1,15 @@
 "use client";
 
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { setTheme, useTheme } from "@/lib/theme";
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const dark = resolvedTheme === "dark";
+  const theme = useTheme();
+  const dark = theme === "dark";
   return (
-    <Button variant="outline" size="sm" onClick={() => setTheme(dark ? "light" : "dark")}>
+    <Button variant="outline" size="sm" disabled={!theme} onClick={() => setTheme(dark ? "light" : "dark")}>
       {dark ? <SunIcon /> : <MoonIcon />}
       {dark ? "Ver en claro" : "Ver en oscuro"}
     </Button>

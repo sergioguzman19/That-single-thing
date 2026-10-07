@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { MergeLines } from "@/components/brand/merge-lines";
-import { PortalCard } from "@/components/brand/portal-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -30,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LANE_COLORS, laneVar } from "@/lib/lanes";
 import { ThemeToggle, ToastDemo } from "./demos";
+import { MotionDemo } from "./motion-demo";
 
 export const metadata: Metadata = { title: "Sistema · That Single Thing" };
 
@@ -43,6 +42,14 @@ const CORE = [
   { token: "portal", name: "Luz de patio", note: "Interior del arco" },
   { token: "rot", name: "Ocre Izamal", note: "Tarea pudriéndose" },
   { token: "destructive", name: "Flamboyán", note: "Acciones destructivas" },
+];
+
+const MOTION_SPEC = [
+  { name: "Llegada", what: "La tarea sube desde el umbral y se enfoca (de borroso a nítido).", timing: "520 ms · ease-portal", util: "animate-portal-arrive" },
+  { name: "Despacho", what: "Al tocar Hecho, la tarea se eleva y se disuelve hacia la luz.", timing: "280 ms · ease-dispatch", util: "animate-portal-dispatch" },
+  { name: "Respiro", what: "El arco se ilumina un instante con azul maya mientras se va una y llega la otra.", timing: "600 ms · ease-portal", util: "animate-portal-glow" },
+  { name: "Trazo", what: "Al cambiar de carril, su línea se dibuja de arriba hacia el umbral.", timing: "420 ms · ease-portal", util: "animate-lane-draw" },
+  { name: "Interacción", what: "Hover y cambios de estado en controles. El botón baja 1 px al presionarlo.", timing: "150 ms", util: "duration-150" },
 ];
 
 const DEMO_LANES = [
@@ -85,30 +92,38 @@ export default function SistemaPage() {
         </ul>
       </header>
 
-      <Section id="firma" title="Firma" lede="Los carriles convergen en el umbral y la tarea única vive dentro del arco. Es la única pantalla que tiene que ser memorable.">
-        <div className="mx-auto w-full max-w-sm">
-          <span className="eyebrow">Martes · Mañana · Bloque de Concejo</span>
-          <div className="mt-4 grid grid-cols-5 gap-1 text-center text-[0.7rem]">
-            {DEMO_LANES.map((lane) => (
-              <span
-                key={lane.id}
-                className="truncate border-b py-1.5 text-muted-foreground data-[on=true]:border-b-2 data-[on=true]:font-semibold data-[on=true]:text-foreground"
-                data-on={lane.id === "concejo"}
-                style={lane.id === "concejo" ? { borderBottomColor: laneVar(lane.color) } : undefined}
-              >
-                {lane.name}
-              </span>
-            ))}
-          </div>
-          <MergeLines lanes={DEMO_LANES} activeId="concejo" />
-          <PortalCard
-            eyebrow="Concejo · 1 de 4"
-            title="Revisar el proyecto de acuerdo de presupuesto 2027"
-            notes="Marcar artículos con riesgo jurídico y preparar observaciones para la comisión."
-            meta={<span><span className="text-rot">●</span> Pudriéndose: 10 días en cola</span>}
-            actions={<><Button size="lg">Hecho</Button><Button size="lg" variant="outline">Empezar</Button></>}
-          />
+      <Section id="firma" title="Firma" lede="Los carriles convergen en el umbral y la tarea única vive dentro del arco. Es la única pantalla que tiene que ser memorable. Esta demo es interactiva.">
+        <MotionDemo />
+      </Section>
+
+      <Section id="movimiento" title="Movimiento" lede="La calma también se mueve. Las cosas llegan despacio y se van rápido. Nada parpadea, nada rebota y nada se mueve si nadie hizo nada.">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[34rem] text-left text-sm">
+            <thead className="eyebrow">
+              <tr className="border-b">
+                <th className="py-2 pr-4 font-medium">Momento</th>
+                <th className="py-2 pr-4 font-medium">Qué pasa</th>
+                <th className="py-2 pr-4 font-medium">Duración · curva</th>
+                <th className="py-2 font-medium">Utilidad</th>
+              </tr>
+            </thead>
+            <tbody className="[&_td]:py-3 [&_td]:pr-4 [&_td]:align-top [&_tr]:border-b">
+              {MOTION_SPEC.map((m) => (
+                <tr key={m.name}>
+                  <td className="font-semibold">{m.name}</td>
+                  <td className="text-muted-foreground">{m.what}</td>
+                  <td className="font-mono text-xs whitespace-nowrap tabular-nums">{m.timing}</td>
+                  <td className="font-mono text-xs">{m.util}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        <ul className="grid gap-2 text-sm sm:grid-cols-3">
+          <li><b className="font-semibold">Despachar es rápido.</b> 280 ms: terminar algo debe sentirse inmediato.</li>
+          <li><b className="font-semibold">Llegar es lento.</b> 520 ms: la nueva tarea se presenta con calma, no te asalta.</li>
+          <li><b className="font-semibold">Movimiento reducido.</b> Si el sistema lo pide, todo se vuelve un fundido de 150 ms.</li>
+        </ul>
       </Section>
 
       <Section id="color" title="Color" lede="Tokens semánticos. En código se usan por nombre (bg-maya, text-rot), nunca con hex.">

@@ -50,7 +50,7 @@ export function MotionDemo() {
   const i = (index[laneId] ?? 0) % queue.length;
   const task = queue[i];
   const lane = LANES.find((l) => l.id === laneId)!;
-  const rot = task.days >= 7;
+  const aging = task.days >= 7;
 
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
@@ -118,8 +118,8 @@ export function MotionDemo() {
         title={task.title}
         notes={task.notes || undefined}
         meta={
-          <span className={rot ? "text-rot" : undefined}>
-            {rot ? "● Pudriéndose: " : "En cola hace "}
+          <span className={aging ? "text-aging" : undefined}>
+            {aging ? "● Rezagada: " : "En cola hace "}
             {task.days} {task.days === 1 ? "día" : "días"}
           </span>
         }

@@ -52,6 +52,38 @@ export type Database = {
           },
         ]
       }
+      focus_events: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          lane_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          lane_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          lane_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_events_lane_id_user_id_fkey"
+            columns: ["lane_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "lanes"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       lanes: {
         Row: {
           archived_at: string | null
@@ -84,27 +116,27 @@ export type Database = {
       }
       profiles: {
         Row: {
+          aging_days: number
           created_at: string
           focus_lane_id: string | null
           focus_until: string | null
           id: string
-          rot_days: number
           timezone: string
         }
         Insert: {
+          aging_days?: number
           created_at?: string
           focus_lane_id?: string | null
           focus_until?: string | null
           id: string
-          rot_days?: number
           timezone?: string
         }
         Update: {
+          aging_days?: number
           created_at?: string
           focus_lane_id?: string | null
           focus_until?: string | null
           id?: string
-          rot_days?: number
           timezone?: string
         }
         Relationships: [

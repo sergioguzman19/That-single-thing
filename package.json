@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --linked --schema public > src/lib/supabase/database.types.ts",
     "icons": "node scripts/generate-icons.mjs",
@@ -42,8 +42,5 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.3"
-  },
-  "engines": {
-    "node": "24.x"
   }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -124,6 +125,22 @@ export default function SistemaPage() {
           <li><b className="font-semibold">Llegar es lento.</b> 520 ms: la nueva tarea se presenta con calma, no te asalta.</li>
           <li><b className="font-semibold">Movimiento reducido.</b> Si el sistema lo pide, todo se vuelve un fundido de 150 ms.</li>
         </ul>
+      </Section>
+
+      <Section id="icono" title="Ícono" lede="Umbral: un arco con proporción de puerta y un solo punto azul maya esperando en el umbral. Bajo 48 px se usa una versión de trazo más grueso. Fuente única: scripts/generate-icons.mjs (npm run icons).">
+        <div className="flex flex-wrap items-end gap-6">
+          {[
+            { src: "/icons/icon-1024.png", label: "Claro", size: 120 },
+            { src: "/icons/icon-dark-1024.png", label: "Oscuro", size: 120 },
+            { src: "/icons/icon-192.png", label: "60 px", size: 60 },
+            { src: "/icon.svg", label: "32 px · pestaña", size: 32 },
+          ].map((icon) => (
+            <figure key={icon.src} className="grid justify-items-center gap-2">
+              <Image src={icon.src} alt="" width={icon.size} height={icon.size} className="rounded-[22.4%] ring-1 ring-border" />
+              <figcaption className="eyebrow">{icon.label}</figcaption>
+            </figure>
+          ))}
+        </div>
       </Section>
 
       <Section id="color" title="Color" lede="Tokens semánticos. En código se usan por nombre (bg-maya, text-rot), nunca con hex.">

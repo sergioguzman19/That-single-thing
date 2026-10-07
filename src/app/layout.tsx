@@ -24,6 +24,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "That Single Thing",
   description: "Muchos carriles, una sola tarea.",
+  applicationName: "That Single Thing",
+  appleWebApp: {
+    capable: true,
+    title: "Single Thing",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {

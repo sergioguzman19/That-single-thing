@@ -186,6 +186,8 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
   const queue = lane?.tasks ?? [];
   const inProgressHere = queue.find((t) => t.startedAt) ?? null;
   const position = task ? queue.findIndex((t) => t.id === task.id) + 1 : 0;
+  // La que sube cuando esta se despache (solo si hay una tarea única ahora).
+  const nextTask = task && phase === "idle" ? (queue[position] ?? null) : null;
 
   return (
     <div className="mx-auto w-full max-w-md md:max-w-lg">
@@ -299,11 +301,24 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
           )}
 
           <Hint mode={d.mode} laneName={lane?.name} blockLaneName={blockLane?.name} untilLabel={untilLabel} onBack={() => d.block && pick(d.block.laneId)} />
-          {next ? (
-            <p className="mt-1 text-center text-xs text-muted-foreground">
-              Sigue: <span className="font-medium text-foreground">{lanes.find((l) => l.id === next.laneId)?.name}</span> a las{" "}
-              {fmtTime(instantAt(d.local, next.startMinute, timeZone))}
-            </p>
+          {nextTask || next ? (
+            <dl className="mx-auto mt-3 grid max-w-sm gap-1 text-center text-xs text-muted-foreground">
+              {nextTask ? (
+                <div>
+                  <dt className="inline">Siguiente en {lane?.name}: </dt>
+                  <dd className="inline font-medium text-foreground">{nextTask.title}</dd>
+                </div>
+              ) : null}
+              {next ? (
+                <div>
+                  <dt className="inline">Siguiente bloque: </dt>
+                  <dd className="inline">
+                    <span className="font-medium text-foreground">{lanes.find((l) => l.id === next.laneId)?.name}</span> a las{" "}
+                    {fmtTime(instantAt(d.local, next.startMinute, timeZone))}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
           ) : null}
         </>
       )}
@@ -393,9 +408,9 @@ function Hint({
   onBack: () => void;
 }) {
   const text = {
-    scheduled: `Bloque de ${laneName} ${untilLabel}. Foco total en este frente.`,
-    override: `Cambiaste el bloque ${untilLabel}. Según el plan era de ${blockLaneName}.`,
-    open: `Bloque abierto: despacha ${laneName} ${untilLabel}.`,
+    scheduled: `Bloque de ${laneName} ${untilLabel} · Foco total en este frente`,
+    override: `Cambiaste el bloque ${untilLabel} · Según el plan era de ${blockLaneName}`,
+    open: `Bloque abierto: despacha ${laneName} ${untilLabel}`,
     choose: "",
   }[mode];
   if (!text) return null;

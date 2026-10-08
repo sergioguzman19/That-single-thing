@@ -114,6 +114,24 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          created_at: string
+          key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           aging_days: number
@@ -162,8 +180,39 @@ export type Database = {
           },
         ]
       }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_agent: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_agent?: string
+          user_id?: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_agent?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
+          aging_notified_at: string | null
           completed_at: string | null
           created_at: string
           id: string
@@ -175,6 +224,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          aging_notified_at?: string | null
           completed_at?: string | null
           created_at?: string
           id?: string
@@ -186,6 +236,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          aging_notified_at?: string | null
           completed_at?: string | null
           created_at?: string
           id?: string
@@ -211,7 +262,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      notifications_tick: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

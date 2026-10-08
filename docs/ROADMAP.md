@@ -75,9 +75,15 @@ Plan auditado, reglas corregidas en `CLAUDE.md`, "pudriéndose" → "rezagada", 
 - Archivar un carril quita sus bloques.
 - **Aceptación:** configuras tu semana real y el siguiente bloque programado despacha solo.
 
-### Fase 5 · App de verdad
-- Notificaciones push (service worker + VAPID) al empezar y al terminar cada bloque. El programador será **pg_cron de Supabase**, porque el cron de Vercel Hobby no da precisión de minutos.
-- Pantalla base sin conexión y actualizaciones optimistas en toda la app.
+### Fase 5 · Avisos (rama `fase-5`)
+Solo los avisos de mayor retorno (decidido con Sergio; cada aviso de más gasta atención):
+1. **Terminó un bloque y su tarea sigue abierta** → "¿Terminaste X?" con botones Sí/No (Android; en iOS se abre la app).
+2. **Empieza un bloque abierto entre dos bloques** → escoger qué carril despacha. Bloques pegados o después del último bloque del día: no se avisa.
+3. **Una tarea se volvió rezagada** → una vez por tarea, agrupadas, solo de 8:00 a 21:00 locales.
+
+Cómo funciona: `pg_cron` corre cada **2 minutos** dentro de la base de datos y **solo llama a la app (pg_net) cuando hay algo que avisar** (≈5–10 llamadas al día). La URL y el secreto viven en Supabase Vault. El endpoint `/api/notifications/tick` (protegido con `CRON_SECRET`) arma los avisos con `planNotifications` (función pura con pruebas), los deduplica en `notification_log` y los envía por Web Push a todos los dispositivos activados. Se activan desde el menú de cuenta.
+
+Pendiente para después: funcionamiento sin conexión.
 
 ### Fase 6 · Producto
 - Ajustes: días para rezagada, zona horaria. Historial de hechas. Exportar mis datos.

@@ -66,23 +66,39 @@ export function CaptureButton({ lanes }: { lanes: LaneOption[] }) {
       >
         <PlusIcon className="size-6" />
       </Button>
-      <ResponsiveDialog open={open} onOpenChange={setOpen} title="Capturar">
-        {open ? (
-          lanes.length ? (
-            <CaptureForm lanes={lanes} initialLane={defaultLane(lanes, path)} onDone={() => setOpen(false)} />
-          ) : (
-            <p className="pb-2 text-sm text-muted-foreground">Primero crea un carril en Carriles.</p>
-          )
-        ) : null}
-      </ResponsiveDialog>
+      <CaptureDialog open={open} onOpenChange={setOpen} lanes={lanes} initialLane={open ? defaultLane(lanes, path) : ""} />
     </>
+  );
+}
+
+/** El formulario completo de captura. Lo abren el botón + y "Añadir a {carril}" de cada cola. */
+export function CaptureDialog({
+  open,
+  onOpenChange,
+  lanes,
+  initialLane,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  lanes: LaneOption[];
+  initialLane: string;
+}) {
+  return (
+    <ResponsiveDialog open={open} onOpenChange={onOpenChange} title="Capturar">
+      {open ? (
+        lanes.length ? (
+          <CaptureForm lanes={lanes} initialLane={initialLane || lanes[0].id} onDone={() => onOpenChange(false)} />
+        ) : (
+          <p className="pb-2 text-sm text-muted-foreground">Primero crea un carril en Carriles.</p>
+        )
+      ) : null}
+    </ResponsiveDialog>
   );
 }
 
 function CaptureForm({ lanes, initialLane, onDone }: { lanes: LaneOption[]; initialLane: string; onDone: () => void }) {
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
-  const [showNotes, setShowNotes] = useState(false);
   const [laneId, setLaneId] = useState(initialLane);
   const [first, setFirst] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -122,13 +138,14 @@ function CaptureForm({ lanes, initialLane, onDone }: { lanes: LaneOption[]; init
         enterKeyHint="done"
         className="min-h-14 resize-none text-base"
       />
-      {showNotes ? (
-        <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Descripción" aria-label="Descripción" rows={3} className="text-base" />
-      ) : (
-        <button type="button" onClick={() => setShowNotes(true)} className="-mt-2 justify-self-start text-sm text-maya-ink hover:underline">
-          + Agregar descripción
-        </button>
-      )}
+      <Textarea
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Descripción (opcional)"
+        aria-label="Descripción"
+        rows={3}
+        className="text-base"
+      />
       <div className="grid gap-2">
         <Label>Carril</Label>
         <LanePicker lanes={lanes} value={laneId} onChange={setLaneId} name="capture-lane" />

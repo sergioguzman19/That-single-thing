@@ -13,11 +13,12 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVerticalIcon, PlusIcon } from "lucide-react";
-import { useOptimistic, useRef, useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { cn } from "cn";
-import { Input } from "@/components/ui/input";
-import { createTask, reorderTask } from "@/lib/actions/tasks";
+import { CaptureDialog } from "@/components/app/capture-button";
+import { Button } from "@/components/ui/button";
+import { reorderTask } from "@/lib/actions/tasks";
 import { TaskDialog } from "./task-dialog";
 
 export type QueueTask = {
@@ -34,7 +35,7 @@ type LaneOption = { id: string; name: string; color: string };
 
 const ageLabel = (d: number) => (d === 0 ? "hoy" : d === 1 ? "1 día" : `${d} días`);
 
-/** La cola de un carril: ordenar arrastrando (6 puntos), tocar para editar, añadir abajo. */
+/** La cola de un carril: ordenar arrastrando (6 puntos), tocar para editar, añadir con el formulario completo. */
 export function Queue({ lane, tasks, lanes }: { lane: LaneOption; tasks: QueueTask[]; lanes: LaneOption[] }) {
   const [optimistic, setOptimistic] = useOptimistic(tasks);
   const [, startTransition] = useTransition();
@@ -62,7 +63,7 @@ export function Queue({ lane, tasks, lanes }: { lane: LaneOption; tasks: QueueTa
     <div className="grid gap-3">
       {optimistic.length === 0 ? (
         <p className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
-          {lane.name} no tiene tareas. Escribe la primera abajo.
+          {lane.name} no tiene tareas. Añade la primera abajo.
         </p>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis, restrictToParentElement]} onDragEnd={onDragEnd}>
@@ -76,7 +77,7 @@ export function Queue({ lane, tasks, lanes }: { lane: LaneOption; tasks: QueueTa
         </DndContext>
       )}
 
-      <QuickAdd lane={lane} />
+      <AddToLane lane={lane} lanes={lanes} />
       <TaskDialog task={editing} lanes={lanes} onOpenChange={(o) => !o && setEditing(null)} />
     </div>
   );
@@ -122,36 +123,16 @@ function SortableRow({ task, index, onOpen }: { task: QueueTask; index: number; 
   );
 }
 
-function QuickAdd({ lane }: { lane: LaneOption }) {
-  const [title, setTitle] = useState("");
-  const [pending, startTransition] = useTransition();
-  const input = useRef<HTMLInputElement>(null);
-
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!title.trim()) return;
-    startTransition(async () => {
-      const result = await createTask({ laneId: lane.id, title });
-      if (!result.ok) return void toast.error(result.error);
-      setTitle("");
-      input.current?.focus();
-    });
-  };
-
+/** Abre el formulario completo de captura con este carril ya marcado. */
+function AddToLane({ lane, lanes }: { lane: LaneOption; lanes: LaneOption[] }) {
+  const [open, setOpen] = useState(false);
   return (
-    <form onSubmit={submit} className="relative">
-      <PlusIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-      <Input
-        ref={input}
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder={`Añadir a ${lane.name}…`}
-        aria-label={`Nueva tarea para ${lane.name}`}
-        maxLength={500}
-        disabled={pending}
-        enterKeyHint="done"
-        className="h-11 pl-9 text-base"
-      />
-    </form>
+    <>
+      <Button variant="outline" className="h-11 justify-start border-dashed text-muted-foreground" onClick={() => setOpen(true)}>
+        <PlusIcon />
+        Añadir a {lane.name}
+      </Button>
+      <CaptureDialog open={open} onOpenChange={setOpen} lanes={lanes} initialLane={lane.id} />
+    </>
   );
 }

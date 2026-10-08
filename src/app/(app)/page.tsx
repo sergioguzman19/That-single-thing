@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { MergeLines } from "@/components/brand/merge-lines";
 import { PortalCard } from "@/components/brand/portal-card";
-import { getLanes } from "@/lib/data/lanes";
+import { getBoard } from "@/lib/data/lanes";
 import { laneVar } from "@/lib/lanes";
 
 export const metadata: Metadata = { title: "Ahora · That Single Thing" };
 
 export default async function AhoraPage() {
-  const lanes = await getLanes();
+  const { lanes } = await getBoard();
 
   if (lanes.length === 0) {
     return (
@@ -15,7 +15,7 @@ export default async function AhoraPage() {
         <PortalCard
           eyebrow="Bienvenido"
           title="Todavía no tienes carriles."
-          notes="Los carriles son los frentes de tu vida. Crearlos llega con la próxima actualización."
+          notes="Los carriles son los frentes de tu vida. Créalos en la sección Carriles."
         />
       </div>
     );
@@ -35,7 +35,7 @@ export default async function AhoraPage() {
       <PortalCard
         eyebrow="Muy pronto"
         title="Aquí vivirá tu única tarea."
-        notes="Tus carriles ya están listos. Cuando captures tareas, la primera del carril que toque va a subir a este arco."
+        notes="Tus carriles y sus colas ya están listos. Muy pronto, la primera del carril que toque va a subir a este arco."
       />
     </div>
   );

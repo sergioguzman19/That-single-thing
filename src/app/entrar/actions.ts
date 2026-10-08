@@ -49,6 +49,8 @@ export async function login(prev: LoginState, formData: FormData): Promise<Login
       options: { shouldCreateUser: false, emailRedirectTo: origin ? `${origin}/auth/confirm` : undefined },
     });
     if (error) {
+      // Queda en los logs del servidor (Vercel o terminal) para diagnosticar envíos fallidos.
+      console.error("[entrar] signInWithOtp", { code: error.code, status: error.status, message: error.message });
       const message = sendError(error.code);
       // Si falla un reenvío, la persona sigue en el paso del código.
       return prev.step === "code" ? { ...prev, error: message } : { step: "email", email, error: message };

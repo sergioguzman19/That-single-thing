@@ -79,10 +79,12 @@ export async function moveLane(id: string, direction: -1 | 1): Promise<ActionRes
   return results.some((r) => r.error) ? fail(GENERIC_ERROR) : done();
 }
 
-/** Archivar saca el carril de la vista; sus tareas se conservan. */
+/** Archivar saca el carril de la vista y de la semana (se quitan sus bloques); sus tareas se conservan. */
 export async function archiveLane(id: string): Promise<ActionResult> {
   await requireUser();
   const supabase = await createClient();
   const { error } = await supabase.from("lanes").update({ archived_at: new Date().toISOString() }).eq("id", id);
-  return error ? fail(GENERIC_ERROR) : done();
+  if (error) return fail(GENERIC_ERROR);
+  const { error: blocksError } = await supabase.from("blocks").delete().eq("lane_id", id);
+  return blocksError ? fail(GENERIC_ERROR) : done();
 }

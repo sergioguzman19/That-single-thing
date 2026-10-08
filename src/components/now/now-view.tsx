@@ -24,7 +24,8 @@ import { moveTaskToEdge } from "@/lib/actions/tasks";
 import type { NowState } from "@/lib/data/now";
 import { dispatch } from "@/lib/dispatch";
 import { laneVar } from "@/lib/lanes";
-import { localTime } from "@/lib/time";
+import { instantAt, localTime } from "@/lib/time";
+import { nextBlockToday } from "@/lib/week";
 import { MOTION, prefersReducedMotion } from "@/lib/motion";
 
 /** Lo lee la captura (capture-button.tsx) para preseleccionar el carril que despacha. */
@@ -181,6 +182,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
     });
   };
 
+  const next = nextBlockToday(state.blocks, d.local.weekday, d.local.minute);
   const queue = lane?.tasks ?? [];
   const inProgressHere = queue.find((t) => t.startedAt) ?? null;
   const position = task ? queue.findIndex((t) => t.id === task.id) + 1 : 0;
@@ -297,6 +299,12 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
           )}
 
           <Hint mode={d.mode} laneName={lane?.name} blockLaneName={blockLane?.name} untilLabel={untilLabel} onBack={() => d.block && pick(d.block.laneId)} />
+          {next ? (
+            <p className="mt-1 text-center text-xs text-muted-foreground">
+              Sigue: <span className="font-medium text-foreground">{lanes.find((l) => l.id === next.laneId)?.name}</span> a las{" "}
+              {fmtTime(instantAt(d.local, next.startMinute, timeZone))}
+            </p>
+          ) : null}
         </>
       )}
 

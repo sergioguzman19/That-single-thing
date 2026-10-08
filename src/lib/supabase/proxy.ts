@@ -4,7 +4,8 @@ import type { Database } from "./database.types";
 import { supabasePublishableKey, supabaseUrl } from "./env";
 
 /** Rutas que se ven sin sesión. Todo lo demás exige haber entrado. */
-const PUBLIC_PATHS = ["/entrar", "/auth", "/sistema", "/manifest.webmanifest"];
+// /api/notifications/tick se protege con CRON_SECRET; /sw.js debe cargarse siempre.
+const PUBLIC_PATHS = ["/entrar", "/auth", "/sistema", "/manifest.webmanifest", "/sw.js", "/api/notifications/tick"];
 const isPublic = (path: string) => PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 
 /**

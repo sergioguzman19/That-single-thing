@@ -16,9 +16,10 @@ Web app responsiva: varios carriles (frentes de vida) con colas de tareas que co
 - **Single thing**, reglas completas en `docs/ROADMAP.md`:
   - Bloque programado → despacha su carril.
   - Bloque abierto (sin programación) → el usuario escoge qué carril despacha.
-  - Fuera del plan → tocar otro carril durante un bloque programado.
+  - Cambiar de carril con uno despachando (bloque programado o abierto ya escogido) = cambiar el bloque completo: pide confirmación ("Seguir en X" es la opción principal) y pausa la tarea en curso. Volver al plan no pide confirmación.
   - El foco dura hasta el siguiente bloque programado o el fin del día. Se registra en `focus_events`.
   - Tarea sin terminar al acabar el bloque → se pregunta; si no se terminó, sigue de primera en su carril.
+  - Solo UNA tarea en curso a la vez (índice único `tasks_one_in_progress_idx`); empezar otra pausa la anterior.
   - El motor de despacho es una función pura con hora + zona horaria; nunca calcular "ahora" en el servidor.
 
 ## Acceso

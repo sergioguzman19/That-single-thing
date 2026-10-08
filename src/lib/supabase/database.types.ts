@@ -121,6 +121,8 @@ export type Database = {
           focus_lane_id: string | null
           focus_until: string | null
           id: string
+          last_period_end: string | null
+          last_task_id: string | null
           timezone: string
         }
         Insert: {
@@ -129,6 +131,8 @@ export type Database = {
           focus_lane_id?: string | null
           focus_until?: string | null
           id: string
+          last_period_end?: string | null
+          last_task_id?: string | null
           timezone?: string
         }
         Update: {
@@ -137,6 +141,8 @@ export type Database = {
           focus_lane_id?: string | null
           focus_until?: string | null
           id?: string
+          last_period_end?: string | null
+          last_task_id?: string | null
           timezone?: string
         }
         Relationships: [
@@ -146,6 +152,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "lanes"
             referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "profiles_last_task_id_fkey"
+            columns: ["last_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
           },
         ]
       }

@@ -4,10 +4,12 @@ import { CaptureButton } from "@/components/app/capture-button";
 import { BottomNav, TopNav } from "@/components/app/nav-links";
 import { UmbralMark } from "@/components/brand/umbral-mark";
 import { requireUser } from "@/lib/auth";
+import { getBoard } from "@/lib/data/lanes";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   // El layout lee la sesión para el menú; cada página vuelve a exigirla cerca de sus datos.
-  const user = await requireUser();
+  const [user, board] = await Promise.all([requireUser(), getBoard()]);
+  const lanes = board.lanes.map(({ id, name, color }) => ({ id, name, color }));
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-20 border-b bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
@@ -21,7 +23,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
         </div>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-6 pb-36 sm:px-6 md:pb-16">{children}</main>
-      <CaptureButton />
+      <CaptureButton lanes={lanes} />
       <BottomNav />
     </div>
   );

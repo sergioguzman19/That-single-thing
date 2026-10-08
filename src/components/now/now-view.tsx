@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useOptimistic, useRef, useState, useTransition } from "react";
 import { useNow } from "@/hooks/use-now";
 import { toast } from "sonner";
+import { cn } from "cn";
 import { CaptureDialog } from "@/components/app/capture-button";
 import { MergeLines } from "@/components/brand/merge-lines";
 import { PortalCard } from "@/components/brand/portal-card";
@@ -68,6 +69,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
   const [frozen, setFrozen] = useState<{ id: string; laneId: string } | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [checkDismissed, setCheckDismissed] = useState(false);
+  const [pendingSwitch, setPendingSwitch] = useState<string | null>(null);
 
   const allTasks = useMemo(() => lanes.flatMap((l) => l.tasks), [lanes]);
   const d = dispatch({
@@ -116,8 +118,12 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
   const endLabel = endsAtMidnight ? "el fin del día" : fmtTime(d.periodEnd);
   const untilLabel = endsAtMidnight ? "hasta el fin del día" : `hasta las ${endLabel}`;
 
+  /**
+   * Tocar un carril. Escoger en un bloque abierto sin carril, o volver al plan, es directo.
+   * Cambiar de carril cuando ya hay uno despachando es cambiar el bloque completo: se confirma.
+   */
   const pick = (laneId: string) => {
-    if (phase !== "idle") return;
+    if (phase !== "idle" || laneId === d.laneId) return;
     if (d.mode === "override" && laneId === d.block?.laneId) {
       startTransition(async () => {
         setOptimisticFocus(null);
@@ -126,12 +132,17 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
       });
       return;
     }
-    if (laneId === d.laneId) return;
+    if (d.mode === "choose") return switchTo(laneId);
+    setPendingSwitch(laneId);
+  };
+
+  const switchTo = (laneId: string) => {
     const kind = d.block ? "override" : "open";
     startTransition(async () => {
       setOptimisticFocus({ laneId, until: d.periodEnd.toISOString() });
       const r = await chooseLane(laneId, kind);
       if (!r.ok) toast.error(r.error);
+      else if (r.paused) toast(`Pausamos «${r.paused.title}». Sigue de primera en ${r.paused.laneName}.`, { duration: UNDO_MS });
     });
   };
 
@@ -171,6 +182,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
   };
 
   const queue = lane?.tasks ?? [];
+  const inProgressHere = queue.find((t) => t.startedAt) ?? null;
   const position = task ? queue.findIndex((t) => t.id === task.id) + 1 : 0;
 
   return (
@@ -208,7 +220,11 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
                   onClick={() => pick(l.id)}
                   aria-pressed={active}
                   aria-label={`${l.name}, ${l.tasks.length} en cola${isBlock ? ", carril del bloque" : ""}`}
-                  className="truncate border-b-2 py-2 text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none aria-pressed:font-semibold aria-pressed:text-foreground"
+                  className={cn(
+                    "truncate border-b-2 py-2 text-muted-foreground transition-[color,opacity] duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none aria-pressed:font-semibold aria-pressed:text-foreground",
+                    // Con un carril despachando, los demás quedan en segundo plano: cambiar es cambiar el bloque.
+                    d.laneId && !active && !isBlock && "opacity-50",
+                  )}
                   style={{ borderBottomColor: active ? laneVar(l.color) : `color-mix(in oklch, ${laneVar(l.color)} 45%, transparent)` }}
                 >
                   {l.name}
@@ -291,6 +307,32 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
         initialLane={lane?.id ?? ""}
       />
 
+
+      <AlertDialog open={Boolean(pendingSwitch)} onOpenChange={(open) => !open && setPendingSwitch(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Cambiar el bloque completo a {lanes.find((l) => l.id === pendingSwitch)?.name}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {d.mode === "open" ? "Estás en un bloque abierto con " : "Estás en el bloque de "}
+              {lane?.name} {untilLabel}. Respetar el bloque es lo que protege tu concentración.
+              {inProgressHere ? ` «${inProgressHere.title}» está en curso: quedaría pausada y de primera en ${lane?.name}.` : ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setPendingSwitch(null)}>Seguir en {lane?.name}</AlertDialogAction>
+            <AlertDialogCancel
+              onClick={() => {
+                const target = pendingSwitch!;
+                setPendingSwitch(null);
+                switchTo(target);
+              }}
+            >
+              Cambiar el bloque
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={Boolean(pendingCheck)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -343,9 +385,9 @@ function Hint({
   onBack: () => void;
 }) {
   const text = {
-    scheduled: `Bloque de ${laneName} ${untilLabel}. Toca otro carril para salirte del plan.`,
-    override: `Fuera del plan ${untilLabel}. Este bloque es de ${blockLaneName}.`,
-    open: `Bloque abierto: despacha ${laneName} ${untilLabel}. Toca otro carril para cambiar.`,
+    scheduled: `Bloque de ${laneName} ${untilLabel}. Foco total en este frente.`,
+    override: `Cambiaste el bloque ${untilLabel}. Según el plan era de ${blockLaneName}.`,
+    open: `Bloque abierto: despacha ${laneName} ${untilLabel}.`,
     choose: "",
   }[mode];
   if (!text) return null;

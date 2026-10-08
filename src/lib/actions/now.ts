@@ -12,16 +12,27 @@ const done = () => {
 };
 
 /**
- * Escoger qué carril despacha: en un bloque abierto ("open") o saliéndose del plan ("override").
- * El foco dura hasta que termine el bloque, o hasta el siguiente bloque o el fin del día.
- * Se calcula con el instante real y la zona horaria del perfil, nunca con la hora local del servidor.
+ * Escoger qué carril despacha: en un bloque abierto ("open") o cambiando el bloque programado
+ * ("override"). Cambiar de carril es cambiar el bloque completo: el foco dura hasta que termine
+ * el bloque (o hasta el siguiente bloque o el fin del día), y la tarea en curso de otro carril
+ * se pausa y queda de primera en el suyo. Se calcula con el instante real y la zona del perfil.
  */
-export async function chooseLane(laneId: string, kind: "open" | "override"): Promise<ActionResult> {
+export async function chooseLane(
+  laneId: string,
+  kind: "open" | "override",
+): Promise<ActionResult & { paused?: { title: string; laneName: string } }> {
   const user = await requireUser();
   const supabase = await createClient();
-  const [{ data: profile }, { data: blocks }] = await Promise.all([
+  const [{ data: profile }, { data: blocks }, { data: inProgress }] = await Promise.all([
     supabase.from("profiles").select("timezone").eq("id", user.id).maybeSingle(),
     supabase.from("blocks").select("lane_id, day_of_week, start_minute, end_minute"),
+    supabase
+      .from("tasks")
+      .select("id, title, lane_id, lanes(name)")
+      .not("started_at", "is", null)
+      .is("completed_at", null)
+      .neq("lane_id", laneId)
+      .maybeSingle(),
   ]);
   const until = focusUntil(
     new Date(),
@@ -29,11 +40,14 @@ export async function chooseLane(laneId: string, kind: "open" | "override"): Pro
     (blocks ?? []).map((b) => ({ laneId: b.lane_id, dayOfWeek: b.day_of_week, startMinute: b.start_minute, endMinute: b.end_minute })),
   );
 
-  const [update, event] = await Promise.all([
+  const [update, event, pause] = await Promise.all([
     supabase.from("profiles").update({ focus_lane_id: laneId, focus_until: until.toISOString() }).eq("id", user.id),
     supabase.from("focus_events").insert({ lane_id: laneId, kind }),
+    inProgress ? supabase.from("tasks").update({ started_at: null }).eq("id", inProgress.id) : Promise.resolve({ error: null }),
   ]);
-  return update.error || event.error ? fail(GENERIC_ERROR) : done();
+  if (update.error || event.error || pause.error) return fail(GENERIC_ERROR);
+  revalidatePath("/", "layout");
+  return inProgress ? { ok: true, paused: { title: inProgress.title, laneName: inProgress.lanes?.name ?? "" } } : ok();
 }
 
 /** Volver al plan: deja que el bloque programado decida otra vez. */

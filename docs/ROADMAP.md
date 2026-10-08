@@ -9,7 +9,8 @@ Si una decisión cambia, se actualiza aquí y en `CLAUDE.md`.
 2. **Una línea de producción, no un calendario.** La fábrica es la atención; los carriles son los insumos. La línea recibe y saca. Programar fechas de entrega es otro proceso: **la app nunca tiene fechas límite**.
 3. **La cola manda.** La prioridad es solo el orden manual de cada carril. Sin campos de prioridad ni urgencia.
 4. **Decidir una vez, ejecutar siempre.** Los bloques deciden qué carril despacha; tú solo decides cuando el bloque está abierto o cuando te sales del plan.
-5. **Flexible sin culpa.** Salirse del plan, dejar algo sin terminar o mandarlo al final es legítimo.
+5. **Respetar los bloques.** Un bloque es foco total en un frente, como hacen los directivos que llevan varias empresas. Cambiar de carril durante un bloque es cambiar el bloque completo, y se confirma.
+6. **Flexible sin culpa.** Salirse del plan, dejar algo sin terminar o mandarlo al final es legítimo.
 
 ## Reglas del motor de despacho
 
@@ -19,7 +20,7 @@ El motor es una **función pura** (`src/lib/dispatch.ts`, fase 3): recibe hora a
 |---|---|---|
 | **Bloque programado** (viernes PM → Clientes) | El del bloque | La primera de su cola |
 | **Bloque abierto** (sábado 3 pm, nada programado) | El que tú escojas | Antes de escoger: "Bloque abierto: ¿qué carril despacha?" |
-| **Fuera del plan** (en un bloque programado tocas otro carril) | El que tocaste | La primera de su cola, con opción "volver al plan" |
+| **Bloque cambiado** (en un bloque programado tocas otro carril y **confirmas** cambiar el bloque completo) | El nuevo | La primera de su cola, con opción "volver al plan" |
 | **Carril del bloque vacío** | Ninguno hasta que decidas | Ofrece escoger otro carril o capturar |
 
 - **Duración del foco** (fuera del plan o escogido en bloque abierto): hasta que empiece el siguiente bloque programado o termine el día, lo que llegue primero. Se guarda en `profiles.focus_lane_id` y `focus_until`, y cada foco se registra en `focus_events`.

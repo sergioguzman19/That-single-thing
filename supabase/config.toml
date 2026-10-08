@@ -247,11 +247,10 @@ otp_expiry = 600
 # sender_name = "Admin"
 
 # Correo del código de acceso (signInWithOtp para usuarios existentes usa la plantilla magic_link).
-# Requiere SMTP propio: el plan gratis no permite cambiar plantillas con el correo por defecto.
-# Se activa al configurar [auth.email.smtp].
-# [auth.email.template.magic_link]
-# subject = "Tu código para entrar a That Single Thing"
-# content_path = "./supabase/templates/codigo.html"
+# Requiere SMTP propio (Resend, configurado en el panel de Supabase; la clave no vive en el repo).
+[auth.email.template.magic_link]
+subject = "Tu código para entrar a That Single Thing"
+content_path = "./supabase/templates/codigo.html"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]

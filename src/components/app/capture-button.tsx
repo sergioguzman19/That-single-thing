@@ -14,10 +14,12 @@ import { createTask } from "@/lib/actions/tasks";
 
 type LaneOption = { id: string; name: string; color: string };
 const LAST_LANE = "tst.lastLane";
+/** Lo escribe la pantalla Ahora (src/components/now/now-view.tsx). */
+const DISPATCH_LANE_KEY = "tst.dispatchLane";
 
-function readLastLane() {
+function readKey(key: string) {
   try {
-    return localStorage.getItem(LAST_LANE);
+    return localStorage.getItem(key);
   } catch {
     return null;
   }
@@ -26,13 +28,17 @@ function readLastLane() {
 /**
  * Carril que viene marcado al capturar: el de la pantalla (dentro de un carril),
  * si no, el último en el que se capturó, si no, el primero.
- * (Desde la fase 3: en Ahora, el que esté despachando.)
+ * En Ahora, el carril que está despachando.
  */
 function defaultLane(lanes: LaneOption[], path: string) {
   const fromPath = path.match(/^\/carriles\/([^/]+)/)?.[1];
   const ids = new Set(lanes.map((l) => l.id));
   if (fromPath && ids.has(fromPath)) return fromPath;
-  const last = readLastLane();
+  if (path === "/") {
+    const dispatching = readKey(DISPATCH_LANE_KEY);
+    if (dispatching && ids.has(dispatching)) return dispatching;
+  }
+  const last = readKey(LAST_LANE);
   if (last && ids.has(last)) return last;
   return lanes[0]?.id ?? "";
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -41,7 +42,12 @@ export async function login(prev: LoginState, formData: FormData): Promise<Login
   if (intent === "send") {
     if (!EMAIL.test(email)) return { step: "email", email, error: "Escribe un correo válido." };
     // shouldCreateUser: false → un correo sin registrar no recibe nada.
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+    // El correo trae el código y, como alternativa, un enlace que vuelve a /auth/confirm.
+    const origin = (await headers()).get("origin") ?? "";
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false, emailRedirectTo: origin ? `${origin}/auth/confirm` : undefined },
+    });
     if (error) {
       const message = sendError(error.code);
       // Si falla un reenvío, la persona sigue en el paso del código.

@@ -1,0 +1,313 @@
+<title>Fase 4 · Semana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: cuatro teléfonos en fila (se apilan en pantallas chicas), cada uno con una nota de qué decide. Tema claro deliberado: es la identidad base; el oscuro se deriva de los mismos tokens. */
+:root {
+  color-scheme: light;
+  --bg: #FFFFFF; --fg: #16211D; --muted: #6B7370; --line: #E4E7E6; --soft: #F3F5F4;
+  --maya: #2F8FA6; --maya-ink: #287A8E; --portal: #F2F8FA; --edge: #DDEBEF; --aging: #9A6A12; --danger: #C2412D;
+  --l-maya: #2F8FA6; --l-flamboyan: #D0553A; --l-anil: #4F5BA8; --l-patio: #3F6B55; --l-izamal: #B7801A; --l-buganvilia: #B4457A; --l-henequen: #7A8A62;
+  --display: "Marcellus", Georgia, serif; --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+body { background: #F3F5F4; color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.45; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 80px; }
+.eyebrow { font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(32px, 5vw, 48px); line-height: 1.05; margin: 8px 0 10px; }
+.lede { color: var(--muted); max-width: 66ch; margin: 0; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; margin-top: 32px; align-items: start; }
+.col { display: grid; gap: 14px; justify-items: center; }
+.note { width: 100%; max-width: 320px; }
+.note b { display: block; font-family: var(--display); font-weight: 400; font-size: 22px; }
+.note .n { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.note ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 13.5px; }
+.note li { margin-bottom: 4px; }
+
+.phone { width: 100%; max-width: 320px; border-radius: 36px; padding: 9px; background: #101413; box-shadow: 0 30px 60px -30px rgba(0,0,0,.4); }
+.screen { position: relative; border-radius: 28px; overflow: hidden; height: 640px; background: var(--bg); display: flex; flex-direction: column; }
+.status { display: flex; justify-content: space-between; padding: 10px 20px 4px; font-size: 11px; font-weight: 600; }
+.top { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px 10px; border-bottom: 1px solid var(--line); }
+.top .back { font-size: 13px; color: var(--muted); }
+.mark { width: 18px; height: 22px; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--display); font-size: 13px; }
+.body { flex: 1; overflow: hidden; padding: 14px 16px 0; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); padding: 8px 0 14px; text-align: center; font-size: 10.5px; color: var(--muted); }
+.tabs b { color: var(--fg); font-weight: 600; }
+.tabs i { display: block; width: 18px; height: 18px; margin: 0 auto 3px; border-radius: 4px; border: 1.5px solid currentColor; }
+.tabs b i { border-color: var(--maya); }
+.fab { position: absolute; right: 14px; bottom: 66px; width: 46px; height: 46px; border-radius: 50%; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 24px; box-shadow: 0 8px 18px rgba(0,0,0,.2); }
+
+h2.t { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 2px 0 2px; }
+.sub { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--lc); flex: none; display: inline-block; }
+
+/* 1. Carriles */
+.lane { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; margin-bottom: 8px; display: grid; gap: 6px; }
+.lane .h { display: flex; align-items: center; gap: 8px; }
+.lane .h .name { font-weight: 600; font-size: 14px; }
+.lane .h .c { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.lane .h .more { color: var(--muted); font-size: 16px; line-height: 1; padding-left: 4px; }
+.lane .first { font-size: 12.5px; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 17px; }
+.lane .first em { font-style: normal; color: var(--muted); font-family: var(--mono); font-size: 10.5px; margin-right: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; border: 1px solid currentColor; border-radius: 99px; padding: 0 7px; line-height: 16px; }
+.chip.aging { color: var(--aging); }
+.addlane { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; color: var(--muted); font-size: 13px; text-align: center; }
+
+/* 2. Cola */
+.lanehead { display: flex; align-items: center; gap: 8px; }
+.lanehead .bar { height: 3px; border-radius: 2px; background: var(--lc); margin: 10px 0 12px; }
+.q { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.q li { display: grid; grid-template-columns: 18px minmax(0,1fr) 14px; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; background: #fff; }
+.q li.head { border-color: var(--lc); background: var(--portal); }
+.q .p { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.q .tt { font-size: 13px; font-weight: 500; line-height: 1.3; }
+.q .meta { font-size: 10.5px; color: var(--muted); margin-top: 2px; display: flex; gap: 6px; align-items: center; }
+.q .grip { color: var(--muted); font-size: 13px; letter-spacing: -2px; }
+.q li.drag { transform: rotate(-1.2deg) translateY(-3px); box-shadow: 0 10px 22px -10px rgba(0,0,0,.35); border-color: var(--maya); }
+.q li.gap { border-style: dashed; background: var(--soft); height: 34px; }
+.inline-add { margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
+
+/* sheets */
+.scrim { position: absolute; inset: 0; background: rgba(16,20,19,.38); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 18px 18px 0 0; padding: 10px 16px 18px; display: grid; gap: 11px; }
+.sheet .grab { width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto 4px; }
+.sheet h3 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; }
+.field { border: 1px solid #DADEDC; border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.field.big { min-height: 48px; font-size: 15px; }
+.field.big span { color: var(--fg); }
+.field .ph { color: var(--muted); }
+.caret { display: inline-block; width: 1px; height: 16px; background: var(--maya); vertical-align: -3px; margin-left: 1px; }
+.label { font-size: 12px; font-weight: 500; }
+.lanes { display: flex; flex-wrap: wrap; gap: 6px; }
+.lanes span { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 99px; padding: 5px 10px; font-size: 12px; font-weight: 500; }
+.lanes span.on { border-color: var(--lc); background: var(--portal); }
+.toggle { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.toggle small { display: block; color: var(--muted); font-size: 11px; }
+.sw { width: 34px; height: 20px; border-radius: 99px; background: var(--line); position: relative; flex: none; }
+.sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.sw.on { background: var(--maya); } .sw.on::after { left: 16px; }
+.btn { display: block; text-align: center; border-radius: 8px; padding: 11px; font-weight: 600; font-size: 14px; background: var(--fg); color: #fff; }
+.btn.ghost { background: #fff; color: var(--fg); border: 1px solid var(--line); font-weight: 500; }
+.btn.danger { background: #fff; color: var(--danger); border: 1px solid var(--line); font-weight: 500; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.add-desc { font-size: 12.5px; color: var(--maya-ink); }
+.colors { display: flex; gap: 8px; }
+.colors i { width: 24px; height: 24px; border-radius: 50%; background: var(--lc); display: block; }
+.colors i.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--fg); }
+.colors i.used { opacity: .25; }
+
+
+/* Escritorio */
+.desk-wrap { margin-top: 48px; }
+.desk-wrap > .note { max-width: 760px; }
+.desk { margin-top: 14px; border-radius: 12px; border: 1px solid #D5DAD8; background: #fff; overflow: hidden; box-shadow: 0 30px 60px -36px rgba(0,0,0,.35); }
+.desk-scroll { overflow-x: auto; }
+.desk-inner { min-width: 900px; position: relative; }
+.chrome { height: 28px; background: #EEF0EF; display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+.chrome i { width: 9px; height: 9px; border-radius: 50%; background: #CBD0CE; display: block; }
+.dtop { display: flex; align-items: center; gap: 24px; padding: 12px 24px; border-bottom: 1px solid var(--line); }
+.dtop .brand { display: flex; align-items: center; gap: 8px; }
+.dtop nav { display: flex; gap: 18px; font-size: 13px; color: var(--muted); margin: 0 auto; }
+.dtop nav b { color: var(--fg); font-weight: 600; }
+.dtop .cap { border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; font-size: 12px; }
+.dtop .cap kbd { font-family: var(--mono); font-size: 10.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+.split { display: grid; grid-template-columns: 300px 1fr; min-height: 470px; }
+.side { border-right: 1px solid var(--line); padding: 18px 16px; display: grid; gap: 6px; align-content: start; }
+.side .lane { margin: 0; }
+.side .lane.sel { border-color: var(--lc); background: var(--portal); }
+.main { padding: 20px 28px; }
+.main .q li { grid-template-columns: 18px minmax(0,1fr) 92px 14px; }
+.main .q .age { font-size: 11px; color: var(--muted); font-family: var(--mono); text-align: right; }
+.main .actions { display: flex; gap: 8px; margin-left: auto; }
+.main .actions span { border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font-size: 12px; }
+.hover-row { outline: 1px solid var(--maya); }
+.hover-row .tools { display: flex; gap: 6px; font-size: 11px; color: var(--maya-ink); }
+
+.decisions { margin-top: 44px; border-top: 1px solid var(--fg); padding-top: 16px; max-width: 760px; }
+.decisions h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 6px 0 10px; }
+.decisions ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.decisions li b { font-weight: 600; }
+
+/* ===== Fase 4 ===== */
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 4px 0 12px; }
+.days span { text-align: center; font-size: 11px; padding: 6px 0 5px; border-radius: 8px; color: var(--muted); }
+.days span b { display: block; font-family: var(--display); font-weight: 400; font-size: 15px; color: var(--fg); }
+.days span.on { background: var(--fg); color: #fff; } .days span.on b { color: #fff; }
+.days span.today::after { content: ""; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--maya); margin: 3px auto 0; }
+.timeline { display: grid; gap: 6px; }
+.slot { display: grid; grid-template-columns: 46px 1fr; gap: 10px; align-items: stretch; }
+.slot .t { font-family: var(--mono); font-size: 10.5px; color: var(--muted); padding-top: 9px; text-align: right; }
+.slot .b { border-radius: 10px; padding: 9px 11px; border: 1px solid var(--line); border-left: 4px solid var(--lc); background: #fff; }
+.slot .b .n { font-weight: 600; font-size: 13.5px; display: flex; gap: 6px; align-items: center; }
+.slot .b .h { font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+.slot .b.now { background: var(--portal); border-color: var(--edge); border-left-color: var(--lc); }
+.slot .b.now .live { margin-left: auto; font-family: var(--body); font-size: 10px; font-weight: 600; color: var(--maya-ink); }
+.slot .open { border: 1px dashed var(--line); border-radius: 10px; padding: 7px 11px; font-size: 11.5px; color: var(--muted); }
+.addblock { margin-top: 10px; border: 1px dashed var(--line); border-radius: 10px; padding: 10px; text-align: center; font-size: 13px; color: var(--muted); }
+.presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.presets span { border: 1px solid var(--line); border-radius: 8px; padding: 7px 6px; text-align: center; font-size: 12px; }
+.presets span small { display: block; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.presets span.on { border-color: var(--fg); background: var(--soft); font-weight: 600; }
+.times { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+.times .field { text-align: center; font-family: var(--mono); font-size: 15px; padding: 9px; }
+.times em { font-style: normal; color: var(--muted); font-size: 12px; }
+.dayspick { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dayspick span { text-align: center; border: 1px solid var(--line); border-radius: 99px; padding: 6px 0; font-size: 12px; font-weight: 500; }
+.dayspick span.on { background: var(--fg); color: #fff; border-color: var(--fg); }
+.warn { font-size: 11.5px; color: var(--danger); }
+.now-mini { border-radius: 10px; border: 1px solid var(--edge); background: var(--portal); padding: 10px 12px; font-size: 12px; color: var(--muted); }
+.now-mini b { color: var(--fg); }
+
+/* Escritorio: semana */
+.wk { display: grid; grid-template-columns: 44px repeat(7, minmax(0,1fr)) 220px; min-width: 980px; }
+.wk .hd { font-size: 11px; text-align: center; padding: 10px 0 8px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.wk .hd b { display: block; font-family: var(--display); font-weight: 400; font-size: 16px; color: var(--fg); }
+.wk .hd.today b { color: var(--maya-ink); }
+.wk .col { position: relative; height: 480px; border-left: 1px solid var(--line); }
+.wk .axis { position: relative; height: 480px; }
+.wk .axis span { position: absolute; right: 6px; font-family: var(--mono); font-size: 10px; color: var(--muted); transform: translateY(-50%); }
+.wk .grid { position: absolute; left: 0; right: 0; border-top: 1px dashed #EEF0EF; }
+.wk .blk { position: absolute; left: 4px; right: 4px; border-radius: 8px; border-left: 4px solid var(--lc); background: color-mix(in srgb, var(--lc) 10%, #fff); padding: 5px 7px; font-size: 11.5px; font-weight: 600; overflow: hidden; }
+.wk .blk small { display: block; font-family: var(--mono); font-weight: 400; font-size: 10px; color: var(--muted); }
+.wk .nowline { position: absolute; left: 0; right: 0; border-top: 2px solid var(--maya); }
+.wk .nowline::before { content: ""; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--maya); }
+.wk .side { grid-row: 1 / span 2; border-left: 1px solid var(--line); padding: 14px 16px; display: grid; gap: 10px; align-content: start; }
+.bal { display: grid; gap: 8px; }
+.bal div { display: grid; grid-template-columns: 70px 1fr 40px; gap: 8px; align-items: center; font-size: 12px; }
+.bal i { display: block; height: 7px; border-radius: 4px; background: var(--lc); }
+.bal .bar { background: var(--soft); border-radius: 4px; }
+.bal em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; }
+</style>
+
+<div class="wrap">
+  <span class="eyebrow">That Single Thing · Fase 4 · Bocetos para aprobar</span>
+  <h1>Semana</h1>
+  <p class="lede">Una semana de ejemplo para ver cómo se arma tu plan: Concejo en las mañanas de lunes a jueves, Clientes y Empresa en las tardes, Hyrox en las noches y el sábado. Tú montas la tuya desde la app y queda guardada en la base de datos; nada de esto viene precargado.</p>
+
+  <div class="row">
+    <div class="col">
+      <div class="note"><span class="n">1</span><b>Tu día en la semana</b>
+        <ul><li>Pestañas por día; el punto azul marca hoy.</li><li>Los bloques del día en orden, con <b>el que está corriendo</b> resaltado.</li><li>Los huecos se ven como <b>bloque abierto</b>: ahí escoges tú.</li></ul></div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>9:12</span><span>95%</span></div>
+        <div class="top"><svg class="mark" viewBox="0 0 100 100"><path d="M27 90 V33 A23 23 0 0 1 73 33 V90 Z" fill="#F2F8FA" stroke="#16211D" stroke-width="7"/><circle cx="50" cy="67" r="7.5" fill="#2F8FA6"/></svg><span class="avatar">S</span></div>
+        <div class="body">
+          <h2 class="t">Semana</h2>
+          <div class="days"><span>Lun<b>L</b></span><span class="on today">Mar<b>M</b></span><span>Mié<b>M</b></span><span>Jue<b>J</b></span><span>Vie<b>V</b></span><span>Sáb<b>S</b></span><span>Dom<b>D</b></span></div>
+          <div class="timeline">
+            <div class="slot" style="--lc:var(--l-maya)"><span class="t">7:00</span><div class="b now"><div class="n"><span class="dot"></span>Concejo<span class="live">Ahora</span></div><div class="h">7:00 – 12:00 · 5 h</div></div></div>
+            <div class="slot"><span class="t">12:00</span><div class="open">Bloque abierto · 2 h</div></div>
+            <div class="slot" style="--lc:var(--l-anil)"><span class="t">14:00</span><div class="b"><div class="n"><span class="dot"></span>Empresa</div><div class="h">14:00 – 18:00 · 4 h</div></div></div>
+            <div class="slot"><span class="t">18:00</span><div class="open">Bloque abierto · 1 h</div></div>
+            <div class="slot" style="--lc:var(--l-izamal)"><span class="t">19:00</span><div class="b"><div class="n"><span class="dot"></span>Hyrox</div><div class="h">19:00 – 20:30 · 1 h 30</div></div></div>
+          </div>
+          <div class="addblock">+ Añadir bloque al martes</div>
+        </div>
+        <div class="fab">+</div>
+        <div class="tabs"><span><i></i>Ahora</span><span><i></i>Carriles</span><b><i></i>Semana</b></div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <div class="note"><span class="n">2</span><b>Crear o editar un bloque</b>
+        <ul><li><b>Franjas rápidas</b> (mañana, tarde, noche) que llenan las horas; luego las ajustas en pasos de 15 min.</li><li>Escoges <b>en qué días</b> se repite: un bloque, varios días de una vez.</li><li>Si choca con otro bloque, te dice con cuál antes de guardar.</li></ul></div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>9:12</span><span>95%</span></div>
+        <div class="top"><span class="back">Semana</span><span class="avatar">S</span></div>
+        <div class="body"><h2 class="t">Semana</h2></div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <h3>Nuevo bloque</h3>
+          <div class="label">Carril</div>
+          <div class="lanes">
+            <span class="on" style="--lc:var(--l-maya)"><i class="dot"></i>Concejo</span>
+            <span style="--lc:var(--l-flamboyan)"><i class="dot"></i>Clientes</span>
+            <span style="--lc:var(--l-anil)"><i class="dot"></i>Empresa</span>
+            <span style="--lc:var(--l-patio)"><i class="dot"></i>Personal</span>
+            <span style="--lc:var(--l-izamal)"><i class="dot"></i>Hyrox</span>
+          </div>
+          <div class="presets"><span class="on">Mañana<small>7:00–12:00</small></span><span>Tarde<small>14:00–18:00</small></span><span>Noche<small>19:00–21:00</small></span></div>
+          <div class="times"><div class="field">7:00</div><em>a</em><div class="field">12:00</div></div>
+          <div class="label">Se repite</div>
+          <div class="dayspick"><span class="on">L</span><span class="on">M</span><span class="on">M</span><span class="on">J</span><span>V</span><span>S</span><span>D</span></div>
+          <span class="btn">Guardar en 4 días</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <div class="note"><span class="n">3</span><b>Ahora, con plan</b>
+        <ul><li>Ya no te pregunta: el bloque programado <b>despacha solo</b>.</li><li>Abajo del arco: hasta cuándo dura y <b>qué sigue</b>.</li><li>El resto de la pantalla Ahora no cambia.</li></ul></div>
+      <div class="phone"><div class="screen">
+        <div class="status"><span>9:12</span><span>95%</span></div>
+        <div class="top"><svg class="mark" viewBox="0 0 100 100"><path d="M27 90 V33 A23 23 0 0 1 73 33 V90 Z" fill="#F2F8FA" stroke="#16211D" stroke-width="7"/><circle cx="50" cy="67" r="7.5" fill="#2F8FA6"/></svg><span class="avatar">S</span></div>
+        <div class="body" style="display:grid;gap:12px;align-content:start">
+          <span class="eyebrow">martes · 9:12</span>
+          <div style="height:300px;border-radius:999px 999px 6px 6px / 120px 120px 6px 6px;background:var(--portal);border:1px solid var(--edge);display:grid;place-items:center;text-align:center;padding:60px 18px 18px">
+            <div><span class="eyebrow">Concejo · 1 de 4</span><div style="font-family:var(--display);font-size:22px;line-height:1.15;margin-top:8px">Revisar el proyecto de acuerdo de presupuesto 2027</div></div>
+          </div>
+          <div class="now-mini"><b>Bloque de Concejo hasta las 12:00.</b> Foco total en este frente.<br>Sigue: bloque abierto 12:00 · <b>Empresa a las 14:00</b></div>
+        </div>
+        <div class="fab">+</div>
+        <div class="tabs"><b><i></i>Ahora</b><span><i></i>Carriles</span><span><i></i>Semana</span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <section class="desk-wrap">
+    <div class="note" style="max-width:760px"><span class="n">4</span><b>La semana en escritorio</b>
+      <ul>
+        <li>Los 7 días a la vez, de 6:00 a 22:00, con la línea de <b>ahora</b> en azul maya.</li>
+        <li>Clic en un hueco para crear un bloque ahí; clic en un bloque para editarlo (el mismo formulario).</li>
+        <li>A la derecha, el <b>balance de horas por carril</b>: qué frente recibe más foco y cuál está descuidado.</li>
+      </ul></div>
+    <div class="desk"><div class="desk-scroll"><div class="desk-inner" style="min-width:980px">
+      <div class="chrome"><i></i><i></i><i></i></div>
+      <div class="dtop">
+        <span class="brand"><svg class="mark" viewBox="0 0 100 100"><path d="M27 90 V33 A23 23 0 0 1 73 33 V90 Z" fill="#F2F8FA" stroke="#16211D" stroke-width="7"/><circle cx="50" cy="67" r="7.5" fill="#2F8FA6"/></svg><span class="eyebrow" style="color:var(--fg)">That Single Thing</span></span>
+        <nav><span>Ahora</span><span>Carriles</span><b>Semana</b></nav>
+        <span class="cap">+ Capturar<kbd>N</kbd></span>
+        <span class="avatar">S</span>
+      </div>
+      <div class="wk" id="wk"></div>
+    </div></div></div>
+  </section>
+
+  <section class="decisions">
+    <span class="eyebrow">Para decidir</span>
+    <h2>Dos preguntas antes de construir</h2>
+    <ol>
+      <li><b>Franjas rápidas por defecto:</b> mañana 7:00–12:00, tarde 14:00–18:00, noche 19:00–21:00. Después las ajustas en cada bloque. ¿Esas horas o prefieres otras?</li>
+      <li><b>Un bloque, varios días:</b> al crear un bloque escoges en qué días se repite (como en 2). Cada día queda como un bloque independiente que luego puedes editar por separado.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+  const START = 6 * 60, END = 22 * 60, H = 480;
+  const y = (min) => ((min - START) / (END - START)) * H;
+  const L = { concejo: ['Concejo', 'var(--l-maya)'], clientes: ['Clientes', 'var(--l-flamboyan)'], empresa: ['Empresa', 'var(--l-anil)'], personal: ['Personal', 'var(--l-patio)'], hyrox: ['Hyrox', 'var(--l-izamal)'] };
+  const B = [
+    [1, 'concejo', 420, 720], [2, 'concejo', 420, 720], [3, 'concejo', 420, 720], [4, 'concejo', 420, 720], [5, 'empresa', 420, 720],
+    [1, 'clientes', 840, 1080], [3, 'clientes', 840, 1080], [2, 'empresa', 840, 1080], [4, 'empresa', 840, 1080], [5, 'personal', 840, 1020],
+    [1, 'hyrox', 1140, 1230], [3, 'hyrox', 1140, 1230], [5, 'hyrox', 1140, 1230], [6, 'hyrox', 480, 600], [6, 'personal', 600, 780],
+  ];
+  const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  const order = [1, 2, 3, 4, 5, 6, 0];
+  const fmt = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+  let html = '<div class="hd"></div>' + days.map((d, i) => `<div class="hd ${i === 1 ? 'today' : ''}">${d}<b>${6 + i}</b></div>`).join('');
+  const hours = {};
+  B.forEach(([, l, s, e]) => (hours[l] = (hours[l] || 0) + (e - s) / 60));
+  const max = Math.max(...Object.values(hours));
+  html += `<div class="side"><span class="eyebrow">Horas por carril</span><div class="bal">${Object.keys(L).map((k) => `<div style="--lc:${L[k][1]}"><span>${L[k][0]}</span><span class="bar"><i style="width:${(hours[k] / max) * 100}%"></i></span><em>${hours[k]} h</em></div>`).join('')}</div><p class="sub" style="margin:4px 0 0">Total: ${Object.values(hours).reduce((a, b) => a + b, 0)} h de foco a la semana</p></div>`;
+  html += '<div class="axis">' + Array.from({ length: 9 }, (_, i) => START + i * 120).map((m) => `<span style="top:${y(m)}px">${fmt(m)}</span>`).join('') + '</div>';
+  order.forEach((dow, i) => {
+    let col = Array.from({ length: 9 }, (_, k) => `<div class="grid" style="top:${y(START + k * 120)}px"></div>`).join('');
+    B.filter(([d]) => d === dow).forEach(([, l, s, e]) => (col += `<div class="blk" style="--lc:${L[l][1]};top:${y(s)}px;height:${y(e) - y(s) - 3}px">${L[l][0]}<small>${fmt(s)}–${fmt(e)}</small></div>`));
+    if (i === 1) col += `<div class="nowline" style="top:${y(9 * 60 + 12)}px"></div>`;
+    html += `<div class="col">${col}</div>`;
+  });
+  document.getElementById('wk').innerHTML = html;
+</script>

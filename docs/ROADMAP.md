@@ -67,10 +67,13 @@ Plan auditado, reglas corregidas en `CLAUDE.md`, "pudriéndose" → "rezagada", 
 - Pregunta "¿Terminaste X?" al cambiar de bloque. Contador de hechas hoy.
 - **Aceptación:** la usas un día completo solo con esta pantalla.
 
-### Fase 4 · Semana
-- Editor de bloques por día con franjas ajustables, sin cruces (la base de datos lo impide).
-- Balance de horas por carril.
-- **Aceptación:** configuras tu semana real y el martes 7 am sube Concejo sin tocar nada.
+### Fase 4 · Semana (rama `fase-4`)
+- Editor de bloques: carril, franjas rápidas (**mañana 8–12, tarde 13–17, noche 18–21**), ajuste en pasos de 15 min y **días en que se repite** (cada día queda como bloque independiente).
+- Cruces: la app dice con qué bloque choca antes de guardar; la base de datos lo garantiza igual.
+- Celular: pestañas por día con la línea de tiempo del día (bloques y huecos abiertos). Escritorio: semana completa con la línea de ahora; clic en un hueco o "Nuevo bloque".
+- Balance de horas por carril. En Ahora: "Sigue: X a las HH:MM".
+- Archivar un carril quita sus bloques.
+- **Aceptación:** configuras tu semana real y el siguiente bloque programado despacha solo.
 
 ### Fase 5 · App de verdad
 - Notificaciones push (service worker + VAPID) al empezar y al terminar cada bloque. El programador será **pg_cron de Supabase**, porque el cron de Vercel Hobby no da precisión de minutos.

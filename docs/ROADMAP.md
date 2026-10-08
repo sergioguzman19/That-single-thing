@@ -25,7 +25,7 @@ El motor es una **función pura** (`src/lib/dispatch.ts`, fase 3): recibe hora a
 - **Duración del foco** (fuera del plan o escogido en bloque abierto): hasta que empiece el siguiente bloque programado o termine el día, lo que llegue primero. Se guarda en `profiles.focus_lane_id` y `focus_until`, y cada foco se registra en `focus_events`.
 - **Siempre la cabeza de la cola.** Ninguna regla sube una tarea que no sea la primera de su carril.
 - **Tarea sin terminar al acabar el bloque:** antes de mostrar la tarea del siguiente bloque se pregunta "¿Terminaste X?". Si no, sigue de primera en su carril y vuelve a ser *that single thing* cuando le toque a ese carril, por programación o por decisión. En el MVP la pregunta sale al abrir la app; con notificaciones (fase 5), al terminar el bloque.
-- **"En curso"** = la tarea ya se empezó (`started_at`). Puede haber varias en curso, una por carril; la tarea visible siempre es una.
+- **"En curso"** = la tarea ya se empezó (`started_at`). **Solo puede haber una en curso** (índice único en la base de datos): empezar otra pausa la anterior, que sigue de primera en su carril.
 - **Rezagada:** tarea con N días o más en cola (N = `profiles.aging_days`, 7 por defecto, ajustable). Es informativa, no cambia el orden. El carril muestra cuántas rezagadas tiene.
 - **Hora:** los bloques se guardan en minutos de la hora local del perfil (`profiles.timezone`). Nunca se calcula "ahora" en el servidor.
 

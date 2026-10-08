@@ -19,6 +19,7 @@ Web app responsiva: varios carriles (frentes de vida) con colas de tareas que co
   - Fuera del plan → tocar otro carril durante un bloque programado.
   - El foco dura hasta el siguiente bloque programado o el fin del día. Se registra en `focus_events`.
   - Tarea sin terminar al acabar el bloque → se pregunta; si no se terminó, sigue de primera en su carril.
+  - Solo UNA tarea en curso a la vez (índice único `tasks_one_in_progress_idx`); empezar otra pausa la anterior.
   - El motor de despacho es una función pura con hora + zona horaria; nunca calcular "ahora" en el servidor.
 
 ## Acceso

@@ -59,14 +59,34 @@ export async function undoComplete(id: string): Promise<ActionResult> {
   return error ? fail(GENERIC_ERROR) : done();
 }
 
-export async function setStarted(id: string, started: boolean): Promise<ActionResult> {
+/**
+ * Empezar o pausar. Solo puede haber una tarea en curso (lo garantiza un índice único):
+ * empezar una pausa la que estuviera en curso, que sigue de primera en su carril.
+ * Devuelve la tarea que se pausó, si hubo una.
+ */
+export async function setStarted(id: string, started: boolean): Promise<ActionResult & { paused?: { title: string; laneName: string } }> {
   await requireUser();
   const supabase = await createClient();
-  const { error } = await supabase
+  if (!started) {
+    const { error } = await supabase.from("tasks").update({ started_at: null }).eq("id", id);
+    return error ? fail(GENERIC_ERROR) : done();
+  }
+
+  const { data: previous } = await supabase
     .from("tasks")
-    .update({ started_at: started ? new Date().toISOString() : null })
-    .eq("id", id);
-  return error ? fail(GENERIC_ERROR) : done();
+    .select("id, title, lanes(name)")
+    .not("started_at", "is", null)
+    .is("completed_at", null)
+    .neq("id", id)
+    .maybeSingle();
+  if (previous) {
+    const { error } = await supabase.from("tasks").update({ started_at: null }).eq("id", previous.id);
+    if (error) return fail(GENERIC_ERROR);
+  }
+  const { error } = await supabase.from("tasks").update({ started_at: new Date().toISOString() }).eq("id", id);
+  if (error) return fail(GENERIC_ERROR);
+  revalidatePath("/", "layout");
+  return previous ? { ok: true, paused: { title: previous.title, laneName: previous.lanes?.name ?? "" } } : ok();
 }
 
 /** Recuerda cuál fue la tarea única y cuándo terminaba su período (para "¿Terminaste X?"). */

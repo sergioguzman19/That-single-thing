@@ -29,6 +29,8 @@ import { MOTION, prefersReducedMotion } from "@/lib/motion";
 /** Lo lee la captura (capture-button.tsx) para preseleccionar el carril que despacha. */
 const DISPATCH_LANE_KEY = "tst.dispatchLane";
 type Phase = "idle" | "dispatching" | "arriving";
+/** Tiempo para deshacer un "Hecho" (y leer avisos importantes). */
+const UNDO_MS = 10_000;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** La pantalla Ahora: el Merge, el arco y la tarea única. */
@@ -144,7 +146,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
       setPhase("arriving");
       setFrozen(null);
       if (!result.ok) toast.error(result.error);
-      else toast(message, undo ? { action: { label: "Deshacer", onClick: () => void undo() } } : undefined);
+      else toast(message, undo ? { duration: UNDO_MS, action: { label: "Deshacer", onClick: () => void undo() } } : undefined);
       await wait(reduced ? 0 : MOTION.glow - MOTION.dispatch);
       setPhase("idle");
     });
@@ -163,6 +165,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
     startTransition(async () => {
       const r = await setStarted(id, start);
       if (!r.ok) toast.error(r.error);
+      else if (r.paused) toast(`Pausamos «${r.paused.title}». Sigue de primera en ${r.paused.laneName}.`, { duration: UNDO_MS });
       else toast(start ? "En curso. Si se acaba el bloque, sigue de primera." : "Pausada. Sigue de primera en su carril.");
     });
   };
@@ -313,7 +316,7 @@ function NowScreen({ state, now }: { state: NowState; now: Date }) {
                 startTransition(async () => {
                   const r = await resolveCheck(id, true);
                   if (!r.ok) toast.error(r.error);
-                  else toast("Hecho", { action: { label: "Deshacer", onClick: () => void undoComplete(id) } });
+                  else toast("Hecho", { duration: UNDO_MS, action: { label: "Deshacer", onClick: () => void undoComplete(id) } });
                 });
               }}
             >

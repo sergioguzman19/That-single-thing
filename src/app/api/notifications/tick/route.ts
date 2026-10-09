@@ -15,9 +15,16 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
   const now = new Date();
-  const { data: subscribers } = await admin.from("push_subscriptions").select("user_id");
+  const { data: subscribers, error: subscribersError } = await admin.from("push_subscriptions").select("user_id");
+  if (subscribersError) {
+    // Antes este error se tragaba y respondía "0 enviados". Ahora queda a la vista.
+    console.error("[tick] no se pudo leer push_subscriptions", subscribersError);
+    return NextResponse.json({ ok: false, error: "db", code: subscribersError.code ?? null, hint: subscribersError.message }, { status: 500 });
+  }
   const userIds = [...new Set((subscribers ?? []).map((s) => s.user_id))];
   let sent = 0;
+  let planned = 0;
+  let duplicates = 0;
 
   for (const userId of userIds) {
     const [{ data: profile }, { data: lanes }, { data: blocks }, { data: tasks }] = await Promise.all([
@@ -51,10 +58,15 @@ export async function POST(request: NextRequest) {
       })),
     });
 
+    planned += notifications.length;
     for (const notification of notifications) {
       // El registro garantiza que cada aviso salga una sola vez aunque el programador repita.
       const { error } = await admin.from("notification_log").insert({ user_id: userId, key: notification.key });
-      if (error) continue; // ya enviado (clave duplicada)
+      if (error) {
+        if (error.code === "23505") duplicates++; // ya enviado
+        else console.error("[tick] no se pudo registrar el aviso", error);
+        continue;
+      }
       sent += await sendToUser(userId, notification);
     }
     if (agingTaskIds.length) {
@@ -62,5 +74,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent });
+  return NextResponse.json({ ok: true, users: userIds.length, planned, duplicates, sent });
 }
